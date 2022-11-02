@@ -1,0 +1,55 @@
+<!doctype html>
+
+<html>
+<head>
+  <title>WebSocket Chat Demo with WebRTC Calling</title>
+  <meta charset="utf-8">
+  <link href="meeting.css" rel="stylesheet">
+  <link href="../shared.css" rel="stylesheet">
+  <script type="text/javascript" src="meeting-client.js"></script>
+  <script src="adapter.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="infobox">
+      当前用户: <span id="currentUser"></span>
+      <button onClick="startMeeting()">开启会议</button>
+      <!-- <p>输入用户名: <input id="name" type="text" maxlength="12" required autocomplete="username" inputmode="verbatim" placeholder="">
+        <input type="button" name="login" value="登陆" onclick="connect()"></p> -->
+      <div id="onlineusers">
+        
+      </div>
+    </div>
+    <ul class="userlistbox"></ul>
+    <div class="chatbox"></div>
+    <div class="meeting">
+      <!-- <video id="received_video_1" class="video" autoplay muted></video>
+      <video id="received_video_2" class="video" autoplay muted></video> -->
+      <div>
+        <video id="local_video" class="video" autoplay muted></video>
+        <span id="localVideoUser"></span>
+      </div>
+      
+    </div>
+    <div class="toolbar">
+      <button id="hangup-button" onclick="hangUpCall();" role="button" disabled>
+        挂断
+      </button>
+    </div>
+    <div class="empty-container"></div>
+    <div class="chat-controls">
+      消息:<br/>
+      <input id="text" type="text" name="text" size="100" maxlength="256" placeholder="消息" autocomplete="off" onkeyup="handleKey(event)" disabled>
+      <input type="button" id="send" name="send" value="Send" onclick="handleSendButton()" disabled>
+    </div>
+  </div>
+  <script>
+    var searchParams = new URLSearchParams(location.search)
+    var userName = searchParams.get('name')
+    console.log('username:', userName)
+    connect(userName)
+    document.getElementById('currentUser').innerText = userName
+    document.getElementById('localVideoUser').innerText = userName
+  </script>
+</body>
+</html>

@@ -21,6 +21,7 @@ const List = () => {
   const [dataSource, setDataSource] = useState([])
   const [showImage, setShowImage] = useState(false)
   const [viewUrl, setViewUrl] = useState('')
+  const [form] = Form.useForm()
   const columns = [
     {
       title: "来源",
@@ -56,15 +57,22 @@ const List = () => {
     }
   ]
 
-  const load = () => {
-    api.getList().then(data => {
+  const load = (params = {}) => {
+    console.log('params:', params)
+    api.getList(params).then(data => {
       console.log('get list:', data)
       setDataSource(data)
     })
   }
 
   const onSearch = () => {
-    load()
+    const { name, place, date=[] } = form.getFieldsValue()
+    load({
+      name: name ? name : undefined,
+      place: place !== 'all' ? place : undefined,
+      startDate: date[0]?.valueOf(),
+      endDate: date[1]?.valueOf(),
+    })
   }
 
   const onView = (path) => {
@@ -83,42 +91,38 @@ const List = () => {
 
   return (
     <>
-      <Form>
+      <Form form={form} initialValues={{place: 'all', date: [moment().subtract(7, 'days'), moment()]}}>
         <Row gutter={24}>
-          <Col span={8}>
+          <Col span={6}>
             <Form.Item
               name="place"
               label="施工现场"
             >
-              <Select defaultValue={"all"} width={200}>
+              <Select width={200}>
                 <Select.Option value="all">所有</Select.Option>
                 {
-                  placeList.map((item) => <Select.Option value={item.id}>{item.name}</Select.Option>)
+                  placeList.map((item) => <Select.Option value={item.id} key={item.id}>{item.name}</Select.Option>)
                 }
               </Select>
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Form.Item
               name="name"
               label="名称"
-              rules={[
-                {
-                  required: true,
-                  message: "Input something!",
-                },
-              ]}
             >
               <Input placeholder="名称" />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col span={12}>
             <Form.Item
               name="date"
               label="日期"
             >
               <DatePicker.RangePicker
                 name="date"
+                showTime={{ format: 'HH:mm' }}
+                format="YYYY-MM-DD HH:mm"
               ></DatePicker.RangePicker>
             </Form.Item>
           </Col>
