@@ -1,0 +1,18 @@
+.login-form, h1 {
+  max-width: 300px;
+  margin: 0 auto;
+}
+h1 {
+  text-align: center;
+  margin-top: 200px;
+  margin-bottom: 100px;
+}
+.login-form-forgot {
+  float: right;
+}
+.ant-col-rtl .login-form-forgot {
+  float: left;
+}
+.login-form-button {
+  width: 100%;
+}

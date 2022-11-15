@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Table, Form, Row, Col, Input, DatePicker, Button, Modal, Select } from "antd"
 import moment from 'moment'
 // import { DeleteOutlined } from '@ant-design/icons'
@@ -6,37 +6,32 @@ import * as api from '../../api'
 
 const ImageServer = 'http://localhost:8080'
 
-const placeList = [
-  {
-    id: 1,
-    name: "施工现场1"
-  },
-  {
-    id: 2,
-    name: "施工现场2"
-  }
-]
-
 const List = () => {
   const [dataSource, setDataSource] = useState([])
   const [showImage, setShowImage] = useState(false)
   const [viewUrl, setViewUrl] = useState('')
+  const [placeList, setPlaceList] = useState([])
   const [form] = Form.useForm()
   const columns = [
     {
       title: "来源",
       dataIndex: "place",
       key: "place",
-      render: (text) => {
-        const place = placeList.find(item => item.id === text)
-        if (place) return place.name
-        return ""
-      }
+      // render: (text) => {
+      //   const place = placeList.find(item => item.id === text)
+      //   if (place) return place.name
+      //   return ""
+      // }
     },
+    // {
+    //   title: "名称",
+    //   dataIndex: "name",
+    //   key: "name",
+    // },
     {
-      title: "名称",
-      dataIndex: "name",
-      key: "name",
+      title: '缩略图',
+      dataIndex: 'relativePath',
+      render: (src) => <img alt="" style={{ width: '50px' }} src={`${ImageServer}/${src}`} />,
     },
     {
       title: "创建日期",
@@ -89,6 +84,13 @@ const List = () => {
     })
   }
 
+  useEffect(() => {
+    api.getConfigData()
+      .then((data) => {
+        setPlaceList(data.map(({ place }) => place))
+      })
+  }, [])
+
   return (
     <>
       <Form form={form} initialValues={{place: 'all', date: [moment().subtract(7, 'days'), moment()]}}>
@@ -101,7 +103,7 @@ const List = () => {
               <Select width={200}>
                 <Select.Option value="all">所有</Select.Option>
                 {
-                  placeList.map((item) => <Select.Option value={item.id} key={item.id}>{item.name}</Select.Option>)
+                  placeList.map((item) => <Select.Option value={item} key={item}>{item}</Select.Option>)
                 }
               </Select>
             </Form.Item>
@@ -135,7 +137,7 @@ const List = () => {
           </Col>
         </Row>
       </Form>
-      <Table rowKey="name" columns={columns} dataSource={dataSource} rowKey={(record) => record._id } />
+      <Table rowKey="name" columns={columns} dataSource={dataSource} />
       <Modal
         open={showImage}
         onOk={() => setShowImage(false)}

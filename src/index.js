@@ -6,6 +6,10 @@ import RecordingList from './recording/list'
 import VideoCall from './video-call/call'
 import VideoList from './video-call/list'
 import UserList from './user/list'
+import ConfigList from './config'
+import ConfigEdit from './config/edit'
+import ConfigAdd from './config/add'
+import Login from './login'
 
 import reportWebVitals from './reportWebVitals';
 
@@ -18,12 +22,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    // loader: rootLoader,
     children: [
       {
         path: "recording-list",
         element: <RecordingList />,
-        // loader: teamLoader,
       },
       {
         path: "video-call",
@@ -34,11 +36,28 @@ const router = createBrowserRouter([
         element: <VideoList />
       },
       {
+        path: 'config-list',
+        element: <ConfigList />
+      },
+      {
+        path: 'config/add',
+        element: <ConfigAdd />
+      },
+      {
+        path: 'config-edit/:id',
+        element: <ConfigEdit />
+      },
+      {
         path: 'user-list',
         element: <UserList />
-      }
+      },
+      
     ],
   },
+  {
+    path: 'login',
+    element: <Login />
+  }
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

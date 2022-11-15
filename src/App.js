@@ -5,13 +5,17 @@ import {
   UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons"
-import { Layout, Menu } from "antd"
+import { Layout, Menu, Button, Row, Col } from "antd"
 import { Link, Outlet, useLocation } from "react-router-dom";
+
+import Menus from './Menus'
 
 const { Header, Sider, Content } = Layout
 const App = () => {
   const [selectedKey, setSelectedKey] = useState("recording-list")
   const [openKey, setOpenKey] = useState('')
+  const [userInfo, setUserInfo] = useState({})
+  const menuItems = Menus[userInfo?.role] ?? []
   const onSelect = (item) => {
     console.log('on select:', item)
     setSelectedKey(item.key)
@@ -20,9 +24,29 @@ const App = () => {
     console.log('open keys:', items)
     setOpenKey(items[1]) 
   }
+  const handleLogout = () => {
+    document.cookie = "isAuthUnsafe=false"
+    document.location.assign('/login')
+  }
 
   const location = useLocation()
-  
+
+  useEffect(() => {
+    const cookies = document.cookie.split(';').map((item) => item.split('='))
+    const isAuth = cookies.find(item => item[0].trim() === 'isAuthUnsafe')
+    const roleCookie = cookies.find(item => item[0].trim() === 'role')
+    const userCookie = cookies.find(item => item[0].trim() === 'user')
+    if (roleCookie) {
+      setUserInfo({
+        role: roleCookie[1],
+        loginUser: userCookie[1]
+      })
+    }
+    console.log('cookies:', cookies, isAuth)
+    if (!Array.isArray(isAuth) || isAuth[1] !== 'true') {
+      document.location.href = '/login'
+    }
+  }, [])
 
   useEffect(() => {
     const path = location.pathname.replace(/^\/(.*)/, "$1")
@@ -33,6 +57,10 @@ const App = () => {
       video: [
         "video-call",
         "video-list",
+      ],
+      config: [
+        "config-list",
+        "config-edit",
       ],
       user: [
         "user-list",
@@ -48,10 +76,6 @@ const App = () => {
     }
 
   }, [location.pathname])
-  
-  console.log('location:', location)
-  console.log('selected key:', selectedKey)
-  console.log('open key:', openKey)
   
   return (
     <Layout>
@@ -71,46 +95,12 @@ const App = () => {
         <Menu
           theme="dark"
           mode="inline"
+          multiple
           selectedKeys={[selectedKey]}
           openKeys={[openKey]}
           onSelect={onSelect}
           onOpenChange={onOpenChange}
-          items={[
-            {
-              key: "recording",
-              icon: <VideoCameraOutlined />,
-              label: "监控查询",
-              children: [{
-                key: "recording-list",
-                icon: <VideoCameraOutlined />,
-                label: <Link to="/recording-list">列表</Link>,
-              }]
-            },
-            {
-              key: "video",
-              icon: <VideoCameraOutlined />,
-              label: "视频会议",
-              children: [{
-                key: "video-call",
-                icon: <VideoCameraOutlined />,
-                label: <Link to="video-call">会议开启</Link>,
-              }, {
-                key: "video-list",
-                icon: <VideoCameraOutlined />,
-                label: <Link to="video-list">会议查询</Link>,
-              }]
-            },
-            {
-              key: "user",
-              icon: <UserOutlined />,
-              label: "用户管理",
-              children: [{
-                key: "user-list",
-                icon: <UserOutlined />,
-                label: <Link to="user-list">用户列表</Link>,
-              }]
-            },
-          ]}
+          items={menuItems}
         >
       </Menu>
       </Sider>
@@ -123,7 +113,15 @@ const App = () => {
             textAlign: 'center',
           }}
         >
-          <h3>视频图片采集系统</h3>
+          <Row>
+            <Col flex={1}>
+              <h3>视频图片采集系统</h3>
+            </Col>
+            <Col flex={0}>
+              <span>{userInfo.loginUser}</span>
+              <Button type="link" style={{ margin: "0 20px 0 5px" }} onClick={handleLogout}>登出</Button>
+            </Col>
+          </Row>
         </Header>
         <Content
           className="site-layout-background"
