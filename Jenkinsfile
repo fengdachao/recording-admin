@@ -11,6 +11,9 @@ pipeline {
         stage('deploy') {
             steps {
               sh 'echo "deploy"'
+              sh 'ls'
+              sh 'docker build -t recording-admin-nginx .'
+              sh 'docker run --name recording-admin-container -p 80:80 -d recording-admin-nginx'
             }
         }
     }
