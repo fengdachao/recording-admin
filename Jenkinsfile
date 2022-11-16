@@ -1,3 +1,4 @@
+env.CI = 'false'
 pipeline {
     agent any
     stages {
@@ -8,9 +9,9 @@ pipeline {
             }
         }
         stage('deploy') {
-          steps {
-            sh 'echo "deploy"'
-          }
+            steps {
+              sh 'echo "deploy"'
+            }
         }
     }
 }
