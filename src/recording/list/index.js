@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Table, Form, Row, Col, Input, DatePicker, Button, Modal, Select } from "antd"
 import moment from 'moment'
+import { v4 as uuidV4 } from 'uuid'
 // import { DeleteOutlined } from '@ant-design/icons'
 import * as api from '../../api'
 
@@ -79,8 +80,8 @@ const List = () => {
 
   const onDelete = (record) => {
     console.log('record:', record)
-    api.deleteItem(record._id, record.physicalPath).then(() => {
-      load()
+    api.deleteItem(record.id, record.physicalPath).then(() => {
+      onSearch()
     })
   }
 

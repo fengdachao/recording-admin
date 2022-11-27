@@ -1,22 +1,13 @@
 import React, { useEffect, useState } from "react"
-import { Input, Checkbox, Button, Row, Col } from "antd"
+import { Input, Checkbox, Button, Row, Col, Space } from "antd"
 
 // import { connect, startMeeting } from "./lib/meeting-client"
 import "./lib/meeting.css"
 
 var userName = "监控中心"
 
-function log(text) {
-  var time = new Date()
-
-  console.log("[" + time.toLocaleTimeString() + "] " + text)
-}
-
 var myHostname = window.location.hostname
 
-// WebSocket chat/signaling channel variables.
-
-var connection = null
 var clientID = 0
 
 var connectionList = []
@@ -39,47 +30,42 @@ var webcamStream = null // MediaStream from webcam
 
 var webcamStreamMap = {}
 
-// let onlineUsers = []
-
-// connect(userName, function (users) {
-//   // onlineUsers = users
-//   // console.log("online users:", onlineUsers)
-// })
-
 const VideoCall = () => {
   const [onlineUsers, setOnlineUsers] = useState([])
   const [recordingUrl, setRecordingUrl] = useState(null)
+  const [inviteUsers, setInviteUsers] = useState([])
 
-  let recorder
-  // Output logging information to console.
+  const recorderMap = {}
+  const recordingMap = {}
 
-  
-
-  // Output an error message to console.
-
+  const handleUserCheck = (e) => (user) => {
+    if (e.target.checked) {
+      setInviteUsers([
+        ...inviteUsers,
+        user
+      ])
+    } else {
+      setInviteUsers(inviteUsers.filter((item) => {
+        return item !== user
+      }))
+    }
+  }
+ 
   function log_error(text) {
     var time = new Date()
 
     console.trace("[" + time.toLocaleTimeString() + "] " + text)
   }
 
-  // Send a JavaScript object by converting it to JSON and sending
-  // it as a message on the WebSocket connection.
 
   function sendToServer(msg) {
     var msgJSON = JSON.stringify(msg)
     console.log("sending to server count:", connectionList)
-    // log("Sending '" + msg.type + "' message: " + msgJSON);
-    // connection.send(msgJSON);
     connectionList.forEach(function (c) {
       c.send(msgJSON)
     })
   }
 
-  // Called when the "id" message is received; this message is sent by the
-  // server to assign this login session a unique ID number; in response,
-  // this function sends a "username" message to set our username for this
-  // session.
   function setUsername(name) {
     // myUsername = document.getElementById("name").value;
     myUsername = name
@@ -90,8 +76,6 @@ const VideoCall = () => {
       type: "username",
     })
   }
-
-  // Open and configure the connection to the WebSocket server.
 
   function connect(name, userListCallback) {
     // var name = 'local-' + new Date().getTime()
@@ -107,7 +91,6 @@ const VideoCall = () => {
     }
     serverUrl = scheme + "://" + myHostname + ":6503"
 
-    log(`Connecting to server: ${serverUrl}`)
     connection = new WebSocket(serverUrl, "json")
 
     connection.onopen = function (evt) {
@@ -123,7 +106,6 @@ const VideoCall = () => {
       var chatBox = document.querySelector(".chatbox")
       var text = ""
       var msg = JSON.parse(evt.data)
-      log("Message received: ")
       console.dir(msg)
       var time = new Date(msg.date)
       var timeStr = time.toLocaleTimeString()
@@ -158,6 +140,7 @@ const VideoCall = () => {
 
         case "userlist": // Received an updated user list
           // handleUserlistMsg(msg)
+          console.log('user list:', msg.users)
           setOnlineUsers(msg.users)
           // userListCallback(msg.users)
           break
@@ -193,8 +176,8 @@ const VideoCall = () => {
       // scroll the chat panel so that the new text is visible.
 
       if (text.length) {
-        chatBox.innerHTML += text
-        chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight
+        // chatBox.innerHTML += text
+        // chatBox.scrollTop = chatBox.scrollHeight - chatBox.clientHeight
       }
     }
 
@@ -202,31 +185,25 @@ const VideoCall = () => {
   }
 
   async function startMeeting() {
-    // var userList = []
-    // var onlineUsers = document.getElementById("onlineusers").childNodes
-    // onlineUsers.forEach(function (item) {
-    //   if (item.value) userList.push(item.value)
-    // })
     let timeout = 0
-    for (var i = 0; i < onlineUsers.length; i++) {
-      if (onlineUsers[i] === userName) continue
+    // const meetingPanel = document.querySelector('.meeting')
+    // ;[1, 2, 3, 4, 5, 6].forEach((item) => {
+    //   const videoContainer = createVideoElement(item, null)
+    //   meetingPanel.appendChild(videoContainer)
+    // })
+    
+    for (var i = 0; i < inviteUsers.length; i++) {
+      if (inviteUsers[i] === userName) continue
       (function (index) {
         setTimeout(function () {
           console.log("invite user index########################:", onlineUsers[index])
-          invite(onlineUsers[index])
+          invite(inviteUsers[index])
         }, timeout)
         timeout += 5000
       })(i)
     }
-    // invite(userList[0]).then(function() {
-    //   console.log('invite first user done.......!!!!!!!')
-    //   invite(userList[1])
-    // })
-    // await invite(userList[1])
   }
 
-  // Handles a click on the Send button (or pressing return/enter) by
-  // building a "message" object and sending it to the server.
   function handleSendButton() {
     var msg = {
       text: document.getElementById("text").value,
@@ -238,9 +215,6 @@ const VideoCall = () => {
     document.getElementById("text").value = ""
   }
 
-  // Handler for keyboard events. This is used to intercept the return and
-  // enter keys so that we can call send() to transmit the entered text
-  // to the server.
   function handleKey(evt) {
     if (evt.keyCode === 13 || evt.keyCode === 14) {
       if (!document.getElementById("send").disabled) {
@@ -249,18 +223,7 @@ const VideoCall = () => {
     }
   }
 
-  // Create the RTCPeerConnection which knows how to talk to our
-  // selected STUN/TURN server and then uses getUserMedia() to find
-  // our camera and microphone and add that stream to the connection for
-  // use in our video call. Then we configure event handlers to get
-  // needed notifications on the call.
-
   async function createPeerConnection() {
-    log("Setting up a connection...")
-
-    // Create an RTCPeerConnection which knows to use our chosen
-    // STUN server.
-
     myPeerConnection = new RTCPeerConnection({
       iceServers: [
         // Information about ICE servers - Use your own!
@@ -288,15 +251,10 @@ const VideoCall = () => {
     myPeerConnection = null
   }
 
-  // Called by the WebRTC layer to let us know when it's time to
-  // begin, resume, or restart ICE negotiation.
-
   async function handleNegotiationNeededEvent() {
     var myPeerConnection = myPeerConnectionList[targetUsername]
-    log("*** Negotiation needed")
 
     try {
-      log("---> Creating offer")
       const offer = await myPeerConnection.createOffer()
 
       // If the connection hasn't yet achieved the "stable" state,
@@ -304,19 +262,16 @@ const VideoCall = () => {
       // will be fired when the state stabilizes.
 
       if (myPeerConnection.signalingState != "stable") {
-        log("     -- The connection isn't stable yet; postponing...")
         return
       }
 
       // Establish the offer as the local peer's current
       // description.
 
-      log("---> Setting local description to the offer")
       await myPeerConnection.setLocalDescription(offer)
 
       // Send the offer to the remote peer.
 
-      log("---> Sending the offer to the remote peer")
       sendToServer({
         name: myUsername,
         target: targetUsername,
@@ -324,29 +279,31 @@ const VideoCall = () => {
         sdp: myPeerConnection.localDescription,
       })
     } catch (err) {
-      log(
-        "*** The following error occurred while handling the negotiationneeded event:"
-      )
       reportError(err)
     }
   }
 
-  // Called by the WebRTC layer when events occur on the media tracks
-  // on our WebRTC call. This includes when streams are added to and
-  // removed from the call.
-  //
-  // track events include the following fields:
-  //
-  // RTCRtpReceiver       receiver
-  // MediaStreamTrack     track
-  // MediaStream[]        streams
-  // RTCRtpTransceiver    transceiver
-  //
-  // In our case, we're just taking the first stream found and attaching
-  // it to the <video> element for incoming media.
+  const createVideoElement = (videoId, stream) => {
+    var video = document.createElement("video")
+    video.className = "video"
+    video.id = videoId
+    video.autoplay = true
+    video.muted = true
+    video.srcObject = stream
+
+    // videoPanel.appendChild(video)
+    var videoContainer = document.createElement("div")
+    var nameLabel = document.createElement("p")
+    nameLabel.innerText = targetUsername
+    nameLabel.className = "invite-user"
+    videoContainer.className = "video-container"
+    videoContainer.appendChild(video)
+    videoContainer.appendChild(nameLabel)
+    return videoContainer
+  }
+
   var remoteVideoIds = []
   function handleTrackEvent(event) {
-    log("*** Track event")
     console.log("Track event:", event)
     var videoId = event.streams[0].id
     console.log("video id:", videoId)
@@ -354,35 +311,16 @@ const VideoCall = () => {
     var videoPanel = document.querySelector(".meeting")
     if (!remoteVideoIds.includes(videoId)) {
       remoteVideoIds.push(videoId)
-      var video = document.createElement("video")
-      video.id = videoId
-      video.className = "video"
-      video.autoplay = true
-      video.muted = true
-
-      // videoPanel.appendChild(video)
-      var videoContainer = document.createElement("div")
-      var nameLabel = document.createElement("span")
-      nameLabel.innerText = targetUsername
-      videoContainer.appendChild(video)
-      videoContainer.appendChild(nameLabel)
+      const videoContainer = createVideoElement(videoId, event.streams[0])
       videoPanel.appendChild(videoContainer)
-
-      video.srcObject = event.streams[0]
       // document.getElementById("received_video_1").srcObject = event.streams[0];
       // remoteVideoIds.push(videoId)
     }
-    document.getElementById("hangup-button").disabled = false
+    // document.getElementById("hangup-button").disabled = false
   }
-
-  // Handles |icecandidate| events by forwarding the specified
-  // ICE candidate (created by our local ICE agent) to the other
-  // peer through the signaling server.
 
   function handleICECandidateEvent(event) {
     if (event.candidate) {
-      log("*** Outgoing ICE candidate: " + event.candidate.candidate)
-
       sendToServer({
         type: "new-ice-candidate",
         target: targetUsername,
@@ -391,17 +329,7 @@ const VideoCall = () => {
     }
   }
 
-  // Handle |iceconnectionstatechange| events. This will detect
-  // when the ICE connection is closed, failed, or disconnected.
-  //
-  // This is called when the state of the ICE agent changes.
-
   function handleICEConnectionStateChangeEvent(event) {
-    log(
-      "*** ICE connection state changed to " +
-        myPeerConnectionList[targetUsername].iceConnectionState
-    )
-
     switch (myPeerConnectionList[targetUsername].iceConnectionState) {
       case "closed":
       case "failed":
@@ -411,18 +339,7 @@ const VideoCall = () => {
     }
   }
 
-  // Set up a |signalingstatechange| event handler. This will detect when
-  // the signaling connection is closed.
-  //
-  // NOTE: This will actually move to the new RTCPeerConnectionState enum
-  // returned in the property RTCPeerConnection.connectionState when
-  // browsers catch up with the latest version of the specification!
-
   function handleSignalingStateChangeEvent(event) {
-    log(
-      "*** WebRTC signaling state changed to: " +
-        myPeerConnectionList[targetUsername].signalingState
-    )
     switch (myPeerConnectionList[targetUsername].signalingState) {
       case "closed":
         closeVideoCall()
@@ -430,26 +347,8 @@ const VideoCall = () => {
     }
   }
 
-  // Handle the |icegatheringstatechange| event. This lets us know what the
-  // ICE engine is currently working on: "new" means no networking has happened
-  // yet, "gathering" means the ICE engine is currently gathering candidates,
-  // and "complete" means gathering is complete. Note that the engine can
-  // alternate between "gathering" and "complete" repeatedly as needs and
-  // circumstances change.
-  //
-  // We don't need to do anything when this happens, but we log it to the
-  // console so you can see what's going on when playing with the sample.
-
   function handleICEGatheringStateChangeEvent(event) {
-    log(
-      "*** ICE gathering state changed to: " +
-        myPeerConnectionList[targetUsername].iceGatheringState
-    )
   }
-
-  // Given a message containing a list of usernames, this function
-  // populates the user list box with those names, making each item
-  // clickable to allow starting a video call.
 
   function handleUserlistMsg(msg) {
     var i
@@ -479,44 +378,19 @@ const VideoCall = () => {
     console.log("msg users:", msg.users)
   }
 
-  // Close the RTCPeerConnection and reset variables so that the user can
-  // make or receive another call if they wish. This is called both
-  // when the user hangs up, the other user hangs up, or if a connection
-  // failure is detected.
-
   function closeVideoCall() {
     var localVideo = document.getElementById("local_video")
-
-    log("Closing the call")
-
-    // Close the RTCPeerConnection
-
     if (myPeerConnection) {
-      log("--> Closing the peer connection")
-
-      // Disconnect all our event listeners; we don't want stray events
-      // to interfere with the hangup while it's ongoing.
-
       myPeerConnection.ontrack = null
       myPeerConnection.onnicecandidate = null
       myPeerConnection.oniceconnectionstatechange = null
       myPeerConnection.onsignalingstatechange = null
       myPeerConnection.onicegatheringstatechange = null
       myPeerConnection.onnotificationneeded = null
-
-      // Stop all transceivers on the connection
-
-      console.log(
-        "close call transceivers:",
-        myPeerConnection.getTransceivers().length
-      )
+      
       myPeerConnection.getTransceivers().forEach((transceiver) => {
         transceiver.stop()
       })
-
-      // Stop the webcam preview as well by pausing the <video>
-      // element, then stopping each of the getUserMedia() tracks
-      // on it.
 
       if (localVideo.srcObject) {
         localVideo.pause()
@@ -525,8 +399,6 @@ const VideoCall = () => {
         })
       }
 
-      // Close the peer connection
-
       myPeerConnection.close()
       myPeerConnection = null
       webcamStream = null
@@ -534,27 +406,17 @@ const VideoCall = () => {
 
     // Disable the hangup button
 
-    document.getElementById("hangup-button").disabled = true
+    // document.getElementById("hangup-button").disabled = true
     targetUsername = null
   }
 
-  // Handle the "hang-up" message, which is sent if the other peer
-  // has hung up the call or otherwise disconnected.
-
   function handleHangUpMsg(msg) {
-    log("*** Received hang up notification from other peer")
     var userCheckbox = document.getElementById(msg.name)
     if (userCheckbox) {
       userCheckbox.checked = false
     }
     closeVideoCall()
   }
-
-  // Hang up the call by closing our end of the connection, then
-  // sending a "hang-up" message to the other peer (keep in mind that
-  // the signaling is done on a different connection). This notifies
-  // the other peer that the connection should be terminated and the UI
-  // returned to the "no call in progress" state.
 
   function hangUpCall() {
     closeVideoCall()
@@ -566,28 +428,18 @@ const VideoCall = () => {
     })
   }
 
-  // Handle a click on an item in the user list by inviting the clicked
-  // user to video chat. Note that we don't actually send a message to
-  // the callee here -- calling RTCPeerConnection.addTrack() issues
-  // a |notificationneeded| event, so we'll let our handler for that
-  // make the offer.
-
   async function invite(userName) {
-    log("Starting to prepare an invitation")
     var clickedUsername = userName //evt.target.textContent;
 
     // Record the username being called for future reference
 
     targetUsername = clickedUsername
 
-    log("Inviting user " + targetUsername)
-
     // Call createPeerConnection() to create the RTCPeerConnection.
     // When this returns, myPeerConnection is our RTCPeerConnection
     // and webcamStream is a stream coming from the camera. They are
     // not linked together in any way yet.
 
-    log("Setting up connection to invite user: " + targetUsername)
     createPeerConnection()
 
     // Get access to the webcam stream and attach it to the
@@ -621,10 +473,6 @@ const VideoCall = () => {
     }
   }
 
-  // Accept an offer to video chat. We configure our local settings,
-  // create our RTCPeerConnection, get and attach our local camera
-  // stream, then create and send an answer to the caller.
-
   async function handleVideoOfferMsg(msg) {
     targetUsername = msg.name
     console.log("recv message web stream map:", webcamStreamMap, targetUsername)
@@ -649,7 +497,6 @@ const VideoCall = () => {
     // If the connection isn't stable yet, wait for it...
 
     if (myPeerConnectionList[targetUsername].signalingState != "stable") {
-      log("  - But the signaling state isn't stable, so triggering rollback")
 
       // Set the local and remove descriptions for rollback; don't proceed
       // until both return.
@@ -661,7 +508,6 @@ const VideoCall = () => {
       ])
       return
     } else {
-      log("  - Setting remote description")
       await myPeerConnectionList[targetUsername].setRemoteDescription(desc)
     }
 
@@ -694,7 +540,6 @@ const VideoCall = () => {
       }
     }
 
-    log("---> Creating and sending answer to caller")
 
     await myPeerConnectionList[targetUsername].setLocalDescription(
       await myPeerConnectionList[targetUsername].createAnswer()
@@ -712,7 +557,6 @@ const VideoCall = () => {
   // once the callee has decided to accept our request to talk.
 
   async function handleVideoAnswerMsg(msg) {
-    log("*** Call recipient has accepted our call")
 
     // Configure the remote description, which is the SDP payload
     // in our "video-answer" message.
@@ -737,20 +581,12 @@ const VideoCall = () => {
   async function handleNewICECandidateMsg(msg) {
     var candidate = new RTCIceCandidate(msg.candidate)
 
-    log("*** Adding received ICE candidate: " + JSON.stringify(candidate))
     try {
       await myPeerConnectionList[targetUsername].addIceCandidate(candidate)
     } catch (err) {
       reportError(err)
     }
   }
-
-  // Handle errors which occur when trying to access the local media
-  // hardware; that is, exceptions thrown by getUserMedia(). The two most
-  // likely scenarios are that the user has no camera and/or microphone
-  // or that they declined to share their equipment when prompted. If
-  // they simply opted not to share their media, that's not really an
-  // error, so we won't present a message in that situation.
 
   function handleGetUserMediaError(e) {
     log_error(e)
@@ -785,22 +621,31 @@ const VideoCall = () => {
   }
 
   const handleRecording = () => {
-    const stream = webcamStreamMap[targetUsername]
-    recorder = new MediaRecorder(stream)
-    const chunk = []
-    recorder.start()
-    recorder.onstop = (e) => {
-      const blob = new Blob(chunk)
-      const videoUrl = URL.createObjectURL(blob)
-      setRecordingUrl(videoUrl)
-    }
-    recorder.ondataavailable = (e) => {
-      chunk.push(e.data)
-    }
+    const keys = Object.keys(webcamStreamMap)
+    console.log('recording:', webcamStreamMap)
+    keys.forEach((name) => {
+      const recorder = new MediaRecorder(webcamStreamMap[name])
+      const chunk = []
+      recorder.start()
+      recorder.onstop = (e) => {
+        const blob = new Blob(chunk)
+        const videoUrl = URL.createObjectURL(blob)
+        // setRecordingUrl(videoUrl)
+        recordingMap[name] = videoUrl
+      }
+      recorder.ondataavailable = (e) => {
+        chunk.push(e.data)
+      }
+      recorderMap[name] = recorder 
+      
+    })
   }
 
   const handleStopRecording = () => {
-    recorder.stop()
+    const keys = Object.keys(recorderMap)
+    keys.forEach((recorder) => {
+      recorder.stop()
+    })
   }
 
   useEffect(() => {
@@ -811,36 +656,27 @@ const VideoCall = () => {
     <Row gutter={[10, 24]}>
       <Col>当前用户: <span>{userName}</span></Col>
     </Row>
-    <Row gutter={[10, 24]}>
-      <Col><Button onClick={() => connect(userName)}>连接</Button></Col>
-      <Col><Button onClick={startMeeting}>开启会议</Button></Col>
-      <Col><Button onClick={handleRecording}>录像</Button></Col>
-      <Col><Button onClick={handleStopRecording}>播放录像</Button></Col>
-    </Row>
-    <Row gutter={[10, 24]}>
-      {onlineUsers.map((user, index) => (
-        <Col key={index}><Checkbox>{user}</Checkbox></Col>
-      ))}
-    </Row>
-    <Row gutter={[10, 24]}>
-      <Col>
-          <video id="local_video" className="video" autoPlay muted></video>
-          <p>{userName}</p>
+    <Row>
+      <Col span={20} className="meeting">
+        <div className="video-container">
+            <video id="local_video" className="video" autoPlay muted></video>
+            <p className="invite-user">{userName}</p>
+        </div>
       </Col>
-      <Col>
-          <video src={recordingUrl} className="video" autoPlay muted></video>
-          <p>录像</p>
-      </Col>
-    </Row>
-    <Row gutter={[10, 24]} >  
-      <Col className="meeting" span={12}></Col>
       <Col span={4}>
-          消息:
-          <Input
-            
-          />
-          <Button onClick={handleSendButton}>Send</Button>
-        
+        <Space direction="vertical">
+          <Button onClick={() => connect(userName)}>连接</Button>
+          <Button onClick={startMeeting}>开启会议</Button>
+          <Button onClick={handleRecording}>录像</Button>
+          <Button onClick={handleStopRecording}>播放录像</Button>
+        </Space>
+        <ul>
+          {onlineUsers.filter((item) => item !== userName).map((user, index) => (
+            <li key={index}>
+              <Checkbox onChange={(e) => handleUserCheck(e)(user)}>{user}</Checkbox>
+            </li>
+          ))}
+        </ul>
       </Col>
     </Row>
   </>)

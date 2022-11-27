@@ -69,21 +69,33 @@
   overflow:auto;
 }
 
-/* .meeting {
-  grid-area: meeting;
-  position: relative;
-  display: grid;
-  gap: 10px;
-  grid: repeat(2, 300px) / repeat(2, 300px);
-} */
+.meeting {
+  display: flex;
+  flex-wrap: wrap;
+}
 
 .toolbar {
   grid-area: toolbar;
 }
 
-.video  {
+.video  {  
+  max-width: 200px;
+  height: 150px;
+}
+
+#local_video {
   border: 1px solid black;
-  max-width: 300px;
+}
+
+.video-container {
+  position: relative;
+  height: 150px;
+}
+
+.invite-user {
+  position: absolute;
+  left: 15px;
+  bottom: 5px;
 }
 
 /* The small "preview" view of your camera */
