@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import { Input, Checkbox, Button, Row, Col, Space } from "antd"
 
-// import { connect, startMeeting } from "./lib/meeting-client"
 import "./lib/meeting.css"
 
 var userName = "监控中心"
@@ -25,15 +24,14 @@ var mediaConstraints = {
 var myUsername = null
 var targetUsername = null // To store username of other peer
 var myPeerConnection = null // RTCPeerConnection
-var transceiver = null // RTCRtpTransceiver
-var webcamStream = null // MediaStream from webcam
+var transceiver = null
 
 var webcamStreamMap = {}
 
 const VideoCall = () => {
   const [onlineUsers, setOnlineUsers] = useState([])
-  const [recordingUrl, setRecordingUrl] = useState(null)
   const [inviteUsers, setInviteUsers] = useState([])
+  const localVideoRef = useRef()
 
   const recorderMap = {}
   const recordingMap = {}
@@ -50,13 +48,6 @@ const VideoCall = () => {
       }))
     }
   }
- 
-  function log_error(text) {
-    var time = new Date()
-
-    console.trace("[" + time.toLocaleTimeString() + "] " + text)
-  }
-
 
   function sendToServer(msg) {
     var msgJSON = JSON.stringify(msg)
@@ -167,9 +158,7 @@ const VideoCall = () => {
 
         // Unknown message; output to console for debugging.
 
-        default:
-          log_error("Unknown message received:")
-          log_error(msg)
+        default: break
       }
 
       // If there's text to insert into the chat buffer, do so now, then
@@ -279,7 +268,7 @@ const VideoCall = () => {
         sdp: myPeerConnection.localDescription,
       })
     } catch (err) {
-      reportError(err)
+      console.error(err)
     }
   }
 
@@ -307,16 +296,12 @@ const VideoCall = () => {
     console.log("Track event:", event)
     var videoId = event.streams[0].id
     console.log("video id:", videoId)
-    var videoElement = document.getElementById(videoId)
     var videoPanel = document.querySelector(".meeting")
     if (!remoteVideoIds.includes(videoId)) {
       remoteVideoIds.push(videoId)
       const videoContainer = createVideoElement(videoId, event.streams[0])
       videoPanel.appendChild(videoContainer)
-      // document.getElementById("received_video_1").srcObject = event.streams[0];
-      // remoteVideoIds.push(videoId)
     }
-    // document.getElementById("hangup-button").disabled = false
   }
 
   function handleICECandidateEvent(event) {
@@ -350,126 +335,61 @@ const VideoCall = () => {
   function handleICEGatheringStateChangeEvent(event) {
   }
 
-  function handleUserlistMsg(msg) {
-    var i
-    var listElem = document.querySelector(".userlistbox")
-    var onlineUsers = document.getElementById("onlineusers")
-
-    // Remove all current list members. We could do this smarter,
-    // by adding and updating users instead of rebuilding from
-    // scratch but this will do for this sample.
-
-    while (listElem.firstChild) {
-      listElem.removeChild(listElem.firstChild)
-    }
-
-    while (onlineUsers.firstChild) {
-      onlineUsers.removeChild(onlineUsers.firstChild)
-    }
-
-    // Add member names from the received list.
-
-    msg.users.forEach(function (username) {
-      if (username === myUsername) return
-      
-    })
-
-
-    console.log("msg users:", msg.users)
-  }
-
   function closeVideoCall() {
-    var localVideo = document.getElementById("local_video")
-    if (myPeerConnection) {
-      myPeerConnection.ontrack = null
-      myPeerConnection.onnicecandidate = null
-      myPeerConnection.oniceconnectionstatechange = null
-      myPeerConnection.onsignalingstatechange = null
-      myPeerConnection.onicegatheringstatechange = null
-      myPeerConnection.onnotificationneeded = null
+    const keys = Object.keys(myPeerConnectionList)
+    keys.forEach((key) => {
+      const connection = myPeerConnectionList[key]
+      connection.ontrack = null
+      connection.onnicecandidate = null
+      connection.oniceconnectionstatechange = null
+      connection.onsignalingstatechange = null
+      connection.onicegatheringstatechange = null
+      connection.onnotificationneeded = null
       
-      myPeerConnection.getTransceivers().forEach((transceiver) => {
+      connection.getTransceivers().forEach((transceiver) => {
         transceiver.stop()
+      }) 
+      connection.close()
+    })
+    if (localVideoRef.current.srcObject) {
+      localVideoRef.current.pause()
+      localVideoRef.current.srcObject.getTracks().forEach((track) => {
+        track.stop()
       })
-
-      if (localVideo.srcObject) {
-        localVideo.pause()
-        localVideo.srcObject.getTracks().forEach((track) => {
-          track.stop()
-        })
-      }
-
-      myPeerConnection.close()
-      myPeerConnection = null
-      webcamStream = null
     }
+    myPeerConnectionList = {}
+    webcamStreamMap = {}
 
-    // Disable the hangup button
-
-    // document.getElementById("hangup-button").disabled = true
     targetUsername = null
   }
 
   function handleHangUpMsg(msg) {
-    var userCheckbox = document.getElementById(msg.name)
-    if (userCheckbox) {
-      userCheckbox.checked = false
-    }
-    closeVideoCall()
-  }
-
-  function hangUpCall() {
-    closeVideoCall()
-
-    sendToServer({
-      name: myUsername,
-      target: targetUsername,
-      type: "hang-up",
-    })
+    // var userCheckbox = document.getElementById(msg.name)
+    // if (userCheckbox) {
+    //   userCheckbox.checked = false
+    // }
+    // closeVideoCall()
   }
 
   async function invite(userName) {
-    var clickedUsername = userName //evt.target.textContent;
-
-    // Record the username being called for future reference
-
-    targetUsername = clickedUsername
-
-    // Call createPeerConnection() to create the RTCPeerConnection.
-    // When this returns, myPeerConnection is our RTCPeerConnection
-    // and webcamStream is a stream coming from the camera. They are
-    // not linked together in any way yet.
+    targetUsername = userName
 
     createPeerConnection()
 
-    // Get access to the webcam stream and attach it to the
-    // "preview" box (id "local_video").
-
     try {
-      webcamStreamMap[targetUsername] =
-        await navigator.mediaDevices.getUserMedia(mediaConstraints)
-      document.getElementById("local_video").srcObject =
-        webcamStreamMap[targetUsername]
-    } catch (err) {
-      handleGetUserMediaError(err)
-      return
-    }
-    // await connectLocalVideo()
-
-    // Add the tracks from the stream to the RTCPeerConnection
-
-    try {
-      console.log("webcam tracks:", webcamStreamMap[targetUsername].getTracks())
-      webcamStreamMap[targetUsername]
+      const stream = await navigator.mediaDevices.getUserMedia(mediaConstraints)
+      localVideoRef.current.srcObject = stream
+      stream
         .getTracks()
         .forEach(
           (transceiver = (track) =>
             myPeerConnectionList[targetUsername].addTransceiver(track, {
-              streams: [webcamStreamMap[targetUsername]],
+              streams: [stream],
             }))
         )
+      webcamStreamMap[userName] = stream
     } catch (err) {
-      handleGetUserMediaError(err)
+      console.error(err)
     }
   }
 
@@ -540,7 +460,6 @@ const VideoCall = () => {
       }
     }
 
-
     await myPeerConnectionList[targetUsername].setLocalDescription(
       await myPeerConnectionList[targetUsername].createAnswer()
     )
@@ -589,35 +508,7 @@ const VideoCall = () => {
   }
 
   function handleGetUserMediaError(e) {
-    log_error(e)
-    switch (e.name) {
-      case "NotFoundError":
-        alert(
-          "Unable to open your call because no camera and/or microphone" +
-            "were found."
-        )
-        break
-      case "SecurityError":
-      case "PermissionDeniedError":
-        // Do nothing; this is the same as the user canceling the call.
-        break
-      default:
-        alert("Error opening your camera and/or microphone: " + e.message)
-        break
-    }
-
-    // Make sure we shut down our end of the RTCPeerConnection so we're
-    // ready to try again.
-
-    closeVideoCall()
-  }
-
-  // Handles reporting errors. Currently, we just dump stuff to console but
-  // in a real-world application, an appropriate (and user-friendly)
-  // error message should be displayed.
-
-  function reportError(errMessage) {
-    log_error(`Error ${errMessage.name}: ${errMessage.message}`)
+    console.error(e)
   }
 
   const handleRecording = () => {
@@ -637,7 +528,7 @@ const VideoCall = () => {
         chunk.push(e.data)
       }
       recorderMap[name] = recorder 
-      
+
     })
   }
 
@@ -659,7 +550,7 @@ const VideoCall = () => {
     <Row>
       <Col span={20} className="meeting">
         <div className="video-container">
-            <video id="local_video" className="video" autoPlay muted></video>
+            <video ref={localVideoRef} className="video" autoPlay muted></video>
             <p className="invite-user">{userName}</p>
         </div>
       </Col>
