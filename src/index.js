@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import RecordingList from './recording/list'
-import VideoCall from './video-call/call'
+// import VideoCall from './video-call/call'
+import VideoCall from './video-call/Meeting'
 import VideoList from './video-call/list'
 import UserList from './user/list'
 import ConfigList from './config'
