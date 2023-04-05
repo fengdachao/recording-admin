@@ -9,15 +9,15 @@ services:
     ports:
       - 27017:27017
   resource-api:
-    image: martin31/resource-api
+    image: martin31/resource-api:v1.0
     extra_hosts:
-      - "mongo-local:192.168.0.109"
+      - "mongo-local:192.168.0.103"
     ports:
       - 3001:3001
   upload-server:
     image: martin31/upload-server
     extra_hosts:
-      - "mongo-local:192.168.0.109"
+      - "mongo-local:192.168.0.103"
     ports:
       - 8080:8080
       - 9001:9001

@@ -10,7 +10,9 @@ let peerConnList = {}
 let webcamStreams = {}
 
 const Meeting = () => {
-  const localUser = '监控中心'
+  const urlParams = new URLSearchParams(window.location.search)
+  console.log('number:', urlParams.get('number'))
+  const localUser = `监控中心${urlParams.get('number') ?? ''}`
   const [localStream, setLocalStream] = useState(null)
   const [localStreams, setLocalStreams] = useState({})
   const [userList, setUserList] = useState([])
@@ -341,9 +343,6 @@ const Meeting = () => {
     peerConnList = {}
     webcamStreams = {}
   }
-
-  useEffect(() => {
-  }, [])
 
   return (<>
     <Row gutter={[10, 24]}>
