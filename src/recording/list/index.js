@@ -80,8 +80,15 @@ const List = () => {
 
   const onDelete = (record) => {
     console.log('record:', record)
-    api.deleteItem(record.id, record.physicalPath).then(() => {
-      onSearch()
+    Modal.confirm({
+      content: '确认删除这条记录吗?',
+      onOk: (close) => api.deleteItem(record.id, record.physicalPath)
+        .then(() => {
+          load()
+        })
+        .finally(() => close()),
+      okText: '是',
+      cancelText: '否',
     })
   }
 

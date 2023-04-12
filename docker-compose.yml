@@ -1,7 +1,6 @@
 version: '3.1'
 
 services:
-
   mongo:
     image: mongo
     restart: always
@@ -9,17 +8,21 @@ services:
     ports:
       - 27017:27017
   resource-api:
-    image: martin31/resource-api:v1.0
+    image: martin31/resource-api
     extra_hosts:
-      - "mongo-local:192.168.0.103"
+      - "mongo-local:192.168.0.104"
     ports:
       - 3001:3001
   upload-server:
     image: martin31/upload-server
     extra_hosts:
-      - "mongo-local:192.168.0.103"
+      - "mongo-local:192.168.0.104"
     ports:
       - 8080:8080
       - 9001:9001
       - 9002:9002
+  chat-server:
+    image: martin31/chatserver
+    ports:
+      - 6503:6503
 
