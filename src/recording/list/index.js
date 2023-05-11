@@ -84,7 +84,13 @@ const List = () => {
       content: '确认删除这条记录吗?',
       onOk: (close) => api.deleteItem(record.id, record.physicalPath)
         .then(() => {
-          load()
+          const { name, place, date=[] } = form.getFieldsValue()
+          load({
+            name: name ? name : undefined,
+            place: place !== 'all' ? place : undefined,
+            startDate: date[0]?.valueOf(),
+            endDate: date[1]?.valueOf(),
+          })
         })
         .finally(() => close()),
       okText: '是',

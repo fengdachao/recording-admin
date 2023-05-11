@@ -88,10 +88,10 @@ const App = () => {
           top: 0,
           bottom: 0,
         }}
+        width={240}
         trigger={null}
       >
-        <div className="logo">
-        </div>
+        <p className="logo">工程项目信息管理项目</p>
         <Menu
           theme="dark"
           mode="inline"
@@ -109,13 +109,13 @@ const App = () => {
           className="site-layout-background"
           style={{
             padding: 0,
-            marginLeft: 200,
+            marginLeft: 240,
             textAlign: 'center',
           }}
         >
           <Row>
             <Col flex={1}>
-              <h3>视频图片采集系统</h3>
+              {/* <h3>视频图片采集系统</h3> */}
             </Col>
             <Col flex={0}>
               <span>{userInfo.loginUser}</span>
@@ -129,7 +129,7 @@ const App = () => {
             margin: "24px 16px",
             padding: 24,
             minHeight: 680,
-            marginLeft: 200,
+            marginLeft: 240,
           }}
         >
           <Outlet />

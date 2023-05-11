@@ -10,13 +10,13 @@ services:
   resource-api:
     image: martin31/resource-api
     extra_hosts:
-      - "mongo-local:192.168.0.104"
+      - "mongo-local:192.168.0.108"
     ports:
       - 3001:3001
   upload-server:
     image: martin31/upload-server
     extra_hosts:
-      - "mongo-local:192.168.0.104"
+      - "mongo-local:192.168.0.108"
     ports:
       - 8080:8080
       - 9001:9001
