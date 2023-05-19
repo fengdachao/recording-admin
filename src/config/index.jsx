@@ -36,6 +36,9 @@ const Config = () => {
       dataIndex: 'place',
       title: '地点',
     }, {
+      dataIndex: 'algorithm',
+      title: '算法',
+    }, {
       dataIndex: 'params',
       title: '图像帧抽取算法参数',
     }, {
