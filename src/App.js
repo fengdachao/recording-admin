@@ -12,7 +12,7 @@ import Menus from './Menus'
 
 const { Header, Sider, Content } = Layout
 const App = () => {
-  const [selectedKey, setSelectedKey] = useState("recording-list")
+  const [selectedKey, setSelectedKey] = useState("")
   const [openKey, setOpenKey] = useState('')
   const [userInfo, setUserInfo] = useState({})
   const menuItems = Menus[userInfo?.role] ?? []
@@ -30,6 +30,10 @@ const App = () => {
   }
 
   const location = useLocation()
+
+  useEffect(() => {
+    console.log('select key:', selectedKey)
+  }, [selectedKey])
 
   useEffect(() => {
     const cookies = document.cookie.split(';').map((item) => item.split('='))
@@ -66,7 +70,7 @@ const App = () => {
         "user-list",
       ],
     }
-    setSelectedKey(path)
+    // setSelectedKey(path)
     const menuKeys = Object.keys(menus)
     for(let i = 0; i< menuKeys.length; i++) {
       if (menus[menuKeys[i]].includes(path)) {

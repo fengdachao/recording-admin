@@ -31,23 +31,48 @@ const Config = () => {
     
   }
 
+  const expandRow = ({ deviceList }) => {
+
+    const columns = deviceList.map((item, index) => ({ title: `摄像头#${index}`, dataIndex: `device${index}` }))
+    const deviceData = {}
+    deviceList.forEach((item, index) => {
+      deviceData[`device${index}`] = item
+    })
+    // const data = deviceList.map((item, index) => ({ [`device${index}`]: item }))
+    console.log('device:', deviceData)
+    return <Table dataSource={[deviceData]} columns={columns} />
+  }
+
   const columns = [
     {
+      dataIndex: 'number',
+      title: '项目编号',
+    },
+    {
       dataIndex: 'place',
-      title: '地点',
-    }, {
-      dataIndex: 'algorithm',
-      title: '算法',
-    }, {
-      dataIndex: 'params',
-      title: '图像帧抽取算法参数',
-    }, {
-      dataIndex: 'deleteDuration',
-      title: '删除时间',
-    }, {
+      title: '项目名称/地点',
+    },
+    {
+      title: '摄像头数量',
+      render: (record) => record.deviceList.length,
+    },
+    // {
+    //   dataIndex: 'algorithm',
+    //   title: '算法',
+    // },
+    // {
+    //   dataIndex: 'params',
+    //   title: '图像帧抽取算法参数',
+    // }, 
+    // {
+    //   dataIndex: 'deleteDuration',
+    //   title: '删除时间',
+    // },
+    {
       dataIndex: 'port',
       title: '端口号',
-    }, {
+    },
+    {
       title: '操作',
       render: (ignore, record) => {
         return (<>
@@ -63,7 +88,7 @@ const Config = () => {
         <Button type="link" href="/config/add">添加配置</Button>
       </Col>
     </Row>
-    <Table rowKey="_id" dataSource={configData} columns={columns} />
+    <Table rowKey="_id" dataSource={configData} columns={columns} expandedRowRender={expandRow} />
   </>
 }
 

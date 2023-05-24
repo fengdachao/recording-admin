@@ -34,11 +34,22 @@ const menus = {
       key: "config",
       icon: <VideoCameraOutlined />,
       label: "参数配置",
-      children: [{
-        key: "config-list",
-        icon: <VideoCameraOutlined />,
-        label: <Link to="config-list">配置列表</Link>,
-      }]
+      children: [
+        {
+          key: "config-list",
+          icon: <VideoCameraOutlined />,
+          label: <Link to="config-list">工程项目</Link>,
+        },
+        // {
+        //   key: "project",
+        //   // icon: 
+        //   label: <Link to="/config-project">工程项目</Link>
+        // },
+        {
+          key: "algorithm",
+          label: <Link to="/config-algorithm">帧抽取算法</Link>
+        }
+      ]
     },
     {
       key: "user",

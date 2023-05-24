@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 
-const domain = 'http://192.168.3.2:3001'
+// const domain = 'http://192.168.3.2:3001'
+const domain = 'http://localhost:3001'
 
 export const getList = async (params) => {
   const res = await axios.get(`${domain}/api/list`, { params })
@@ -14,6 +15,11 @@ export const deleteItem = async (id, path) => {
 
 export const getConfigData = async () => {
   const res = await axios.get(`${domain}/api/config/list`)
+  return res.data
+}
+
+export const getConfigParam = async () => {
+  const res = await axios.get(`${domain}/api/config/param`)
   return res.data
 }
 

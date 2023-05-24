@@ -10,6 +10,8 @@ import UserList from './user/list'
 import ConfigList from './config'
 import ConfigEdit from './config/edit'
 import ConfigAdd from './config/add'
+import ConfigProject from './config/project'
+import ConfigAlgorithm from './config/compareConfig'
 import Login from './login'
 
 import reportWebVitals from './reportWebVitals';
@@ -24,6 +26,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
+      {
+        index: true,
+        element: <RecordingList />,
+      },
       {
         path: "recording-list",
         element: <RecordingList />,
@@ -41,6 +47,14 @@ const router = createBrowserRouter([
         element: <ConfigList />
       },
       {
+        path: 'config-project',
+        element: <ConfigProject />
+      },
+      {
+        path: 'config-algorithm',
+        element: <ConfigAlgorithm />
+      },
+      {
         path: 'config/add',
         element: <ConfigAdd />
       },
@@ -52,7 +66,6 @@ const router = createBrowserRouter([
         path: 'user-list',
         element: <UserList />
       },
-      
     ],
   },
   {
