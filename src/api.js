@@ -39,6 +39,10 @@ export const updateConfig = async (config) => {
   await axios.put(`${domain}/api/config/update`, config)
 }
 
+export const updateConfigParam = async (config) => {
+  await axios.put(`${domain}/api/config/param/update`, config)
+}
+
 export const removeConfig = async (id) => {
   await axios.delete(`${domain}/api/config/remove`, { params: {id}})
 }

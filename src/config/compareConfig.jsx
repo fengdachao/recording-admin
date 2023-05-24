@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Row, Col, Form, Input, Radio, Space } from 'antd'
+import { Row, Col, Form, Input, Radio, Space, Button } from 'antd'
 
 import * as api from '../api'
 
@@ -11,6 +11,14 @@ const CompareConfig = () => {
   }
   const onRadioChange = (value) => {
     setAlgorithmParam(value)
+  }
+  const onSave = () => {
+    const payload = form.getFieldsValue()
+    api.updateConfigParam({
+      algorithm: payload.algorithm === 2 ? 'hash' : 'compass',
+      param: payload.param ? payload.param : payload.hashParam,
+      duration: payload.duration,
+    })
   }
   useEffect(() => {
     api.getConfigParam().then((data) => {
@@ -74,6 +82,11 @@ const CompareConfig = () => {
 
           </Col>
         </Row>
+        <Form.Item>
+          <Space size="large" style={{ margin: '20px 0'}}>
+            <Button type="primary" onClick={onSave}>保存</Button>
+          </Space>
+        </Form.Item>
       </Form>
     </div>
 }

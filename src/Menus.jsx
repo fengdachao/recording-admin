@@ -1,6 +1,8 @@
 import {
   UserOutlined,
   VideoCameraOutlined,
+  SettingOutlined,
+  ReadOutlined,
 } from "@ant-design/icons"
 import { Link } from "react-router-dom";
 
@@ -37,7 +39,7 @@ const menus = {
       children: [
         {
           key: "config-list",
-          icon: <VideoCameraOutlined />,
+          icon: <ReadOutlined />,
           label: <Link to="config-list">工程项目</Link>,
         },
         // {
@@ -47,6 +49,7 @@ const menus = {
         // },
         {
           key: "algorithm",
+          icon:  <SettingOutlined />,
           label: <Link to="/config-algorithm">帧抽取算法</Link>
         }
       ]
