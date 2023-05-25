@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-
+import { TITLE } from '../constant'
 import * as api from '../api'
 
 import './index.css'
@@ -22,7 +22,7 @@ const Login = () => {
 
   return (
     <>
-      <h1>视频采集系统登陆</h1>
+      <h1>{TITLE}</h1>
       <Form
         name="normal_login"
         className="login-form"

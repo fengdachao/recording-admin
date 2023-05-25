@@ -15,7 +15,7 @@ const CompareConfig = () => {
   const onSave = () => {
     const payload = form.getFieldsValue()
     api.updateConfigParam({
-      algorithm: payload.algorithm === 2 ? 'hash' : 'compass',
+      algorithm: payload.algorithm === 2 ? 'hash' : 'ssim',
       param: payload.param ? payload.param : payload.hashParam,
       duration: payload.duration,
     })

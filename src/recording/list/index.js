@@ -5,8 +5,9 @@ import { v4 as uuidV4 } from 'uuid'
 // import { DeleteOutlined } from '@ant-design/icons'
 import * as api from '../../api'
 
-const ImageServer = 'http://localhost:8080'
-
+// const ImageServer = 'http://localhost:8080'
+const ImageServer = 'http://192.168.3.2:8080'
+  
 const List = () => {
   const [dataSource, setDataSource] = useState([])
   const [showImage, setShowImage] = useState(false)

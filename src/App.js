@@ -9,6 +9,7 @@ import { Layout, Menu, Button, Row, Col } from "antd"
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 import Menus from './Menus'
+import { TITLE } from './constant'
 
 const { Header, Sider, Content } = Layout
 const App = () => {
@@ -95,7 +96,7 @@ const App = () => {
         width={240}
         trigger={null}
       >
-        <p className="logo">工程项目信息管理项目</p>
+        <p className="logo">{TITLE}</p>
         <Menu
           theme="dark"
           mode="inline"
