@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import Preview from './preview'
 import RecordingList from './recording/list'
 // import VideoCall from './video-call/call'
 import VideoCall from './video-call/Meeting'
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <RecordingList />,
+      },
+      {
+        path: 'preview',
+        element: <Preview />
       },
       {
         path: "recording-list",

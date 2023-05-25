@@ -9,6 +9,10 @@ import { Link } from "react-router-dom";
 const menus = {
   admin: [
     {
+      key: 'preview',
+      label: <a href="http://192.168.3.8" target="_blank">视频监控</a>,
+    },
+    {
       key: "recording",
       icon: <VideoCameraOutlined />,
       label: "监控查询",
