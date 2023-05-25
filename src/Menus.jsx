@@ -18,20 +18,23 @@ const menus = {
         label: <Link to="/recording-list">列表</Link>,
       }]
     },
-    // {
-    //   key: "video",
-    //   icon: <VideoCameraOutlined />,
-    //   label: "视频会议",
-    //   children: [{
-    //     key: "video-call",
-    //     icon: <VideoCameraOutlined />,
-    //     label: <Link to="video-call">会议开启</Link>,
-    //   }, {
-    //     key: "video-list",
-    //     icon: <VideoCameraOutlined />,
-    //     label: <Link to="video-list">会议查询</Link>,
-    //   }]
-    // },
+    {
+      key: "video",
+      icon: <VideoCameraOutlined />,
+      label: "视频会议",
+      children: [
+        {
+        key: "video-call",
+        icon: <VideoCameraOutlined />,
+        label: <Link to="video-call">会议开启</Link>,
+        }, 
+        // {
+        //   key: "video-list",
+        //   icon: <VideoCameraOutlined />,
+        //   label: <Link to="video-list">会议查询</Link>,
+        // }
+      ]
+    },
     {
       key: "config",
       icon: <VideoCameraOutlined />,
