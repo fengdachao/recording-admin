@@ -1,8 +1,10 @@
 import {
+  FileSearchOutlined,
   UserOutlined,
   VideoCameraOutlined,
   SettingOutlined,
   ReadOutlined,
+  PhoneOutlined,
 } from "@ant-design/icons"
 import { Link } from "react-router-dom";
 
@@ -10,26 +12,27 @@ const menus = {
   admin: [
     {
       key: 'preview',
-      label: <a href="http://192.168.3.8" target="_blank">视频监控</a>,
+      icon: <VideoCameraOutlined />,
+      label: <a href="http://192.168.3.8" target="_blank">视频监控-舟山</a>,
     },
     {
       key: "recording",
-      icon: <VideoCameraOutlined />,
+      icon: <FileSearchOutlined />,
       label: "监控查询",
       children: [{
         key: "recording-list",
-        icon: <VideoCameraOutlined />,
+        icon: <FileSearchOutlined />,
         label: <Link to="/recording-list">列表</Link>,
       }]
     },
     {
       key: "video",
-      icon: <VideoCameraOutlined />,
+      icon: <PhoneOutlined />,
       label: "视频会议",
       children: [
         {
         key: "video-call",
-        icon: <VideoCameraOutlined />,
+        icon: <PhoneOutlined />,
         label: <Link to="video-call">会议开启</Link>,
         }, 
         // {

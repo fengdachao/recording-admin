@@ -65,7 +65,7 @@ const Login = () => {
 
         <Form.Item>
           <Button type="primary" htmlType="submit" className="login-form-button">
-            登陆
+            登录
           </Button>
           
         </Form.Item>

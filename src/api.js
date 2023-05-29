@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 
-const domain = 'http://192.168.3.2:3001'
-// const domain = 'http://localhost:3001'
+// const domain = 'http://mongo-local:3001'
+const domain = 'http://192.168.0.106:3001'
 
 export const getList = async (params) => {
   const res = await axios.get(`${domain}/api/list`, { params })

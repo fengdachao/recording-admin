@@ -53,6 +53,10 @@ const Config = () => {
       title: '项目名称/地点',
     },
     {
+      dataIndex: 'recordingDevice',
+      title: '硬盘录像机'
+    },
+    {
       title: '摄像头数量',
       render: (record) => record.deviceList.length,
     },
