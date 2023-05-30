@@ -11,7 +11,7 @@ const Add = () => {
         console.log('Add new successfully')
       })
   }
-  return <ConfigForm initialValues={{}} onSave={onSave} />
+  return <ConfigForm initialValues={{deviceList: ['', '', '', '', '', '']}} onSave={onSave} />
 }
 
 export default Add

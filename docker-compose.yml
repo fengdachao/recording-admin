@@ -3,9 +3,10 @@ version: '3.1'
 services:
   node:
     build: '.'
-    container_name: 'recording-admin'
+    restart: always
+    container_name: recording-admin
     extra_hosts:
-      - "mongo-local:192.168.0.106"
+      - "mongo-local:192.168.0.104"
     ports:
       - 80:3000
   mongo:
@@ -13,28 +14,32 @@ services:
     restart: always
     container_name: recording-mongo
     volumes:
-      - /Users/dachaofeng/cctv-management-db/db:/data/db
+      - mongo-db:/data/db
     ports:
       - 27017:27017
   resource-api:
     image: martin31/resource-api
-    container_name: 'resourc-api'
+    restart: always
+    container_name: resourc-api
     extra_hosts:
-      - "mongo-local:192.168.0.106"
+      - "mongo-local:192.168.0.104"
     ports:
       - 3001:3001
   upload-server:
     image: martin31/upload-server
-    container_name: 'upload-server'
+    restart: always
+    container_name: upload-server
     extra_hosts:
-      - "mongo-local:192.168.0.106"
+      - "mongo-local:192.168.0.104"
     ports:
       - 8080:8080
       - 9001:9001
       - 9002:9002
   chat-server:
     image: martin31/chatserver
-    container_name: 'chatserver'
+    restart: always
+    container_name: chatserver
     ports:
       - 6503:6503
-
+volumes:
+  mongo-db:

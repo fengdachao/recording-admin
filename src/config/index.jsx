@@ -33,14 +33,14 @@ const Config = () => {
 
   const expandRow = ({ deviceList }) => {
 
-    const columns = deviceList.map((item, index) => ({ title: `摄像头#${index}`, dataIndex: `device${index}` }))
+    const columns = deviceList.map((item, index) => ({ title: `摄像头#${index + 1}`, dataIndex: `device${index}` }))
     const deviceData = {}
     deviceList.forEach((item, index) => {
       deviceData[`device${index}`] = item
     })
     // const data = deviceList.map((item, index) => ({ [`device${index}`]: item }))
     console.log('device:', deviceData)
-    return <Table dataSource={[deviceData]} columns={columns} />
+    return <Table dataSource={[deviceData]} columns={columns} pagination={false} />
   }
 
   const columns = [
@@ -58,7 +58,8 @@ const Config = () => {
     },
     {
       title: '摄像头数量',
-      render: (record) => record.deviceList.length,
+      dataIndex: 'deviceCount',
+      // render: (record) => record.deviceList.length,
     },
     // {
     //   dataIndex: 'algorithm',

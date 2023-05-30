@@ -156,7 +156,10 @@ const List = () => {
       <Modal
         open={showImage}
         onOk={() => setShowImage(false)}
-        onCancel={() => setShowImage(false)}
+        // onCancel={() => setShowImage(false)}
+        footer={
+          <Button type="primary" onClick={() => setShowImage(false)}>OK</Button>
+        }
       >
         <img src={viewUrl} alt="" style={{width: '100%'}} />
       </Modal>
