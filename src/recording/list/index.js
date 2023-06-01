@@ -156,6 +156,7 @@ const List = () => {
       <Modal
         open={showImage}
         onOk={() => setShowImage(false)}
+        closable={false}
         // onCancel={() => setShowImage(false)}
         footer={
           <Button type="primary" onClick={() => setShowImage(false)}>OK</Button>
