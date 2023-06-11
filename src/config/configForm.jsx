@@ -39,6 +39,7 @@ const Edit = ({ initialValues, onSave }) => {
     </Form.Item>
     <Form.List name="deviceList">
       {(fields) => {
+        console.log('files:', fields)
         const list = fields.map((field, index) => {
           console.log('fields:', field)
           return (<Form.Item {...field} key={index} label={`摄像头#${index + 1}`}>

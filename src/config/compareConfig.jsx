@@ -39,8 +39,8 @@ const CompareConfig = () => {
   return <div>
       <h2>监控视频帧抽取算法</h2>
       <Form form={form} onChange={onChange}>
-        <Form.Item name="duration" label="抽取间隙">
-          <Input />
+        <Form.Item name="duration" label="抽取间隙" wrapperCol={{span:6}}>
+          <Space><Input /><label>秒</label></Space>
         </Form.Item>
         <h4 style={{marginBottom: '20px'}}>算法选择及参数配置</h4>
         <Row>

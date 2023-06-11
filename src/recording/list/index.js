@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react"
 import { Table, Form, Row, Col, Input, DatePicker, Button, Modal, Select } from "antd"
 import moment from 'moment'
 import { v4 as uuidV4 } from 'uuid'
+
+import { HOST } from '../../constant'
 // import { DeleteOutlined } from '@ant-design/icons'
 import * as api from '../../api'
 
 // const ImageServer = 'http://localhost:8080'
-const ImageServer = 'http://192.168.3.2:8080'
+const ImageServer = `http://${HOST}:8080`
 
 const List = () => {
   const [dataSource, setDataSource] = useState([])
@@ -48,11 +50,25 @@ const List = () => {
         <>
           <Button type="link" onClick={() => onView(record.relativePath)}>查看</Button>
           {/* <DeleteOutlined onClick={() => onDelete(record._id)} /> */}
+          {/* <a href={`${ImageServer}/${record.relativePath}`} download={`${record.relativePath}`}>下载</a> */}
+          <Button type="link" onClick={() => download(`${ImageServer}/${record.relativePath}`, record.relativePath)}>下载</Button>
           <Button type="link" onClick={() => onDelete(record)}>删除</Button>
         </>
       )
     }
   ]
+
+  const download = (url, filename) => {
+    fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+    })
+    .catch(console.error);
+  }
 
   const load = (params = {}) => {
     console.log('params:', params)
@@ -155,14 +171,15 @@ const List = () => {
       <Table rowKey="name" columns={columns} dataSource={dataSource} />
       <Modal
         open={showImage}
+        width="50%"
         onOk={() => setShowImage(false)}
         closable={false}
-        // onCancel={() => setShowImage(false)}
+        onCancel={() => setShowImage(false)}
         footer={
           <Button type="primary" onClick={() => setShowImage(false)}>OK</Button>
         }
       >
-        <img src={viewUrl} alt="" style={{width: '100%'}} />
+        <img src={viewUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain'}} />
       </Modal>
     </>
   )

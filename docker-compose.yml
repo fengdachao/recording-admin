@@ -1,14 +1,14 @@
 version: '3.1'
 
 services:
-  node:
-    build: '.'
-    restart: always
-    container_name: recording-admin
-    extra_hosts:
-      - "mongo-local:192.168.3.9"
-    ports:
-      - 80:3000
+  # node:
+  #   build: '.'
+  #   restart: always
+  #   container_name: recording-admin
+  #   extra_hosts:
+  #     - "mongo-local:192.168.0.105"
+  #   ports:
+  #     - 80:3000
   mongo:
     image: mongo
     restart: always
@@ -22,7 +22,7 @@ services:
     restart: always
     container_name: resourc-api
     extra_hosts:
-      - "mongo-local:192.168.3.9"
+      - "mongo-local:192.168.0.105"
     ports:
       - 3001:3001
   upload-server:
@@ -30,11 +30,21 @@ services:
     restart: always
     container_name: upload-server
     extra_hosts:
-      - "mongo-local:192.168.3.9"
+      - "mongo-local:192.168.0.105"
     ports:
       - 8080:8080
       - 9001:9001
       - 9002:9002
+      - 9003:9003
+      - 9004:9004
+      - 9005:9005
+      - 9006:9006
+      - 9007:9007
+      - 9008:9008
+      - 9009:9009
+      - 9010:9010
+      - 9011:9011
+      - 9012:9012
   chat-server:
     image: martin31/chatserver
     restart: always

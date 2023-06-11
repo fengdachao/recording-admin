@@ -5,15 +5,27 @@ import {
   SettingOutlined,
   ReadOutlined,
   PhoneOutlined,
+  CloudServerOutlined,
+  LinkOutlined,
+  AimOutlined,
+  TableOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons"
 import { Link } from "react-router-dom";
+
+import { RECORDINGLIST } from "./constant";
 
 const menus = {
   admin: [
     {
       key: 'preview',
-      icon: <VideoCameraOutlined />,
-      label: <a href="http://192.168.3.8" target="_blank">视频监控-舟山</a>,
+      icon: <CloudServerOutlined />,
+      label: '现场硬盘录像机',
+      children: RECORDINGLIST.map(({ ip, name }) => ({
+        key: 'zhoushan',
+        icon: <LinkOutlined />,
+        label: <a href={`http://${ip}`} target="_blank">{name}</a>,
+      }))
     },
     {
       key: "recording",
@@ -21,7 +33,7 @@ const menus = {
       label: "监控查询",
       children: [{
         key: "recording-list",
-        icon: <FileSearchOutlined />,
+        icon: <TableOutlined />,
         label: <Link to="/recording-list">列表</Link>,
       }]
     },
@@ -44,7 +56,7 @@ const menus = {
     },
     {
       key: "config",
-      icon: <VideoCameraOutlined />,
+      icon: <AimOutlined />,
       label: "参数配置",
       children: [
         {
@@ -70,7 +82,7 @@ const menus = {
       label: "用户管理",
       children: [{
         key: "user-list",
-        icon: <UserOutlined />,
+        icon: <UnorderedListOutlined />,
         label: <Link to="user-list">用户列表</Link>,
       }]
     },
