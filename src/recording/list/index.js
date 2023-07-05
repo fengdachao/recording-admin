@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Table, Form, Row, Col, Input, DatePicker, Button, Modal, Select } from "antd"
+import { Table, Form, Row, Col, Input, DatePicker, Button, Modal, Select, Space } from "antd"
 import moment from 'moment'
 import { v4 as uuidV4 } from 'uuid'
 
@@ -7,14 +7,16 @@ import { HOST } from '../../constant'
 // import { DeleteOutlined } from '@ant-design/icons'
 import * as api from '../../api'
 
-// const ImageServer = 'http://localhost:8080'
 const ImageServer = `http://${HOST}:8080`
 
 const List = () => {
   const [dataSource, setDataSource] = useState([])
+  const [rowSelection, setRowSelection] = useState([])
   const [showImage, setShowImage] = useState(false)
   const [viewUrl, setViewUrl] = useState('')
   const [placeList, setPlaceList] = useState([])
+  const [cameraList, setCameraList] = useState([])
+  const [deviceList, setDeviceList] = useState([])
   const [form] = Form.useForm()
   const columns = [
     {
@@ -32,6 +34,10 @@ const List = () => {
     //   dataIndex: "name",
     //   key: "name",
     // },
+    {
+      title: '摄像头',
+      dataIndex: 'cameraName',
+    },
     {
       title: '缩略图',
       dataIndex: 'relativePath',
@@ -58,6 +64,35 @@ const List = () => {
     }
   ]
 
+  const getCameraList = (place, _list) => {
+    const list = []
+    _list.forEach((device) => {
+      if (place === 'all') {
+        device.list.forEach((item) => {
+            list.push({
+              label: item.name,
+              value: item.id,
+            })
+        })
+      }
+      else if (place === device.place) {
+        device.list.forEach((item) => {
+          list.push({
+            label: item.name,
+            value: item.id,
+          }) 
+        })
+      }
+    })
+    return list
+  }
+
+  const onChangePlace = (place) => {
+    const list = getCameraList(place, deviceList)
+    setCameraList(list)
+    form.setFieldValue('camera', undefined)
+  }
+
   const download = (url, filename) => {
     fetch(url)
       .then(response => response.blob())
@@ -71,18 +106,19 @@ const List = () => {
   }
 
   const load = (params = {}) => {
-    console.log('params:', params)
     api.getList(params).then(data => {
-      console.log('get list:', data)
       setDataSource(data)
+    }).then(() => {
+      setRowSelection([])
     })
   }
 
   const onSearch = () => {
-    const { name, place, date=[] } = form.getFieldsValue()
+    const { name, place, date=[], camera } = form.getFieldsValue()
     load({
       name: name ? name : undefined,
       place: place !== 'all' ? place : undefined,
+      cameraId: camera,
       startDate: date[0]?.valueOf(),
       endDate: date[1]?.valueOf(),
     })
@@ -115,12 +151,37 @@ const List = () => {
     })
   }
 
+  const onRowSelectionChange = (newSelection) => {
+    console.log('new selection:', newSelection)
+    setRowSelection(newSelection)
+  }
+
+  const onBatchDownload = () => {
+    
+  }
+
+  const onBatchDelete = () => {
+    const deleteParams = {
+      _id: { $in: rowSelection },
+    }
+    console.log('on batch delete:', deleteParams)
+    api.deleteFromList(rowSelection).then(() => onSearch())
+  }
+
   useEffect(() => {
     api.getConfigData()
       .then((data) => {
         setPlaceList(data.map(({ place }) => place))
+        setDeviceList(data)
+        console.log('config data:', data)
+        const list = getCameraList('all', data)
+        setCameraList(list)
       })
   }, [])
+
+  // useEffect(() => {
+
+  // }, [deviceList])
 
   return (
     <>
@@ -131,7 +192,7 @@ const List = () => {
               name="place"
               label="施工现场"
             >
-              <Select width={200}>
+              <Select width={200} onChange={onChangePlace}>
                 <Select.Option value="all">所有</Select.Option>
                 {
                   placeList.map((item) => <Select.Option value={item} key={item}>{item}</Select.Option>)
@@ -139,12 +200,20 @@ const List = () => {
               </Select>
             </Form.Item>
           </Col>
-          <Col span={6}>
+          {/* <Col span={6}>
             <Form.Item
               name="name"
               label="名称"
             >
               <Input placeholder="名称" />
+            </Form.Item>
+          </Col> */}
+          <Col span={6}>
+            <Form.Item
+              name="camera"
+              label="摄像头"
+            >
+              <Select options={cameraList} />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -160,7 +229,15 @@ const List = () => {
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={24} justify="end">
+        <Row gutter={24} justify="space-between">
+          <Col>
+            <Form.Item>
+              <Space>
+                <Button type="primary" onClick={onBatchDownload}>批量下载</Button>
+                <Button type="primary" onClick={onBatchDelete}>批量删除</Button>
+              </Space>
+            </Form.Item> 
+          </Col>
           <Col>
             <Form.Item>
               <Button type="primary" onClick={onSearch}>查询</Button>
@@ -168,7 +245,7 @@ const List = () => {
           </Col>
         </Row>
       </Form>
-      <Table rowKey="name" columns={columns} dataSource={dataSource} />
+      <Table rowKey="_id" columns={columns} rowSelection={{ selectedRowKeys: rowSelection, onChange: onRowSelectionChange }} dataSource={dataSource} />
       <Modal
         open={showImage}
         width="50%"

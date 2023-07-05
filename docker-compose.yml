@@ -5,8 +5,14 @@ services:
     build: '.'
     restart: always
     container_name: recording-admin
+    x-develop:
+      watch:
+        - action: rebuild
+          path: .
+          target: .
+
     extra_hosts:
-      - "mongo-local:192.168.3.2"
+      - "mongo-local:192.168.0.104"
     ports:
       - 80:3000
   mongo:
@@ -22,15 +28,17 @@ services:
     restart: always
     container_name: resourc-api
     extra_hosts:
-      - "mongo-local:192.168.3.2"
+      - "mongo-local:192.168.0.104"
     ports:
       - 3001:3001
   upload-server:
     image: martin31/upload-server
     restart: always
     container_name: upload-server
+    volumes:
+      - upload-images:/usr/src/app/images/
     extra_hosts:
-      - "mongo-local:192.168.3.2"
+      - "mongo-local:192.168.0.104"
     ports:
       - 8080:8080
       - 9001:9001
@@ -53,3 +61,4 @@ services:
       - 6503:6503
 volumes:
   mongo-db:
+  upload-images:

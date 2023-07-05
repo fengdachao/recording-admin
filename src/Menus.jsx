@@ -10,6 +10,7 @@ import {
   AimOutlined,
   TableOutlined,
   UnorderedListOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons"
 import { Link } from "react-router-dom";
 
@@ -44,7 +45,7 @@ const menus = {
       children: [
         {
         key: "video-call",
-        icon: <PhoneOutlined />,
+        icon: <VideoCameraOutlined />,
         label: <Link to="video-call">会议开启</Link>,
         }, 
         // {
@@ -80,11 +81,18 @@ const menus = {
       key: "user",
       icon: <UserOutlined />,
       label: "用户管理",
-      children: [{
-        key: "user-list",
-        icon: <UnorderedListOutlined />,
-        label: <Link to="user-list">用户列表</Link>,
-      }]
+      children: [
+        {
+          key: "user-list",
+          icon: <UnorderedListOutlined />,
+          label: <Link to="user-list">用户列表</Link>,
+        },
+        {
+          key: "user-add",
+          icon: <UserAddOutlined />,
+          label: <Link to="user/add">添加用户</Link>,
+        }
+      ]
     },
   ],
   user: [

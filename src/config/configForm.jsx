@@ -31,41 +31,30 @@ const Edit = ({ initialValues, onSave }) => {
     <Form.Item label="硬盘录像机" name="recordingDevice">
       <Input />
     </Form.Item>
-    <Form.Item label="摄像头数量" name="deviceCount">
-      <Input />
-    </Form.Item>
-    <Form.Item label="端口号" name="port">
-      <Input />
-    </Form.Item>
-    <Form.List name="deviceList">
+    <Form.List name="list">
       {(fields) => {
-        console.log('files:', fields)
-        const list = fields.map((field, index) => {
-          console.log('fields:', field)
-          return (<Form.Item {...field} key={index} label={`摄像头#${index + 1}`}>
-            <Input />
-          </Form.Item>)
-        })
-        // const newList = []
-        // for(let i = 0; i < count; i++) {
-        //   newList.push((
-        //     <Form.Item label={`摄像头${i+1}`}>
-        //       <Input />
-        //     </Form.Item>
-        //   ))
-        // }
-       return [
-          ...list,
-          // ...newList,
-          // <Form.Item noStyle>
-          //   <Button onClick={handleAdd}>+</Button>
-          // </Form.Item>
-        ]
-      }}
-      
+          const list = fields.map((field, index) => {
+            console.log('fields:', field)
+            return (<>
+              <Form.Item name={[field.name, 'name']} key={`name-${index+1}`} label={`摄像头#名称${index + 1}`}>
+                <Input />
+              </Form.Item>
+              <Form.Item name={[field.name, 'ip']} key={`ip-${index+1}`} label={`摄像头#IP${index + 1}`}>
+                <Input />
+              </Form.Item>
+              <Form.Item name={[field.name, 'port' ]} key={`port-${index+1}`} label={`端口#${index + 1}`}>
+                <Input />
+              </Form.Item>
+            </>)
+          }) 
+          return list
+        }
+      }
     </Form.List>
-    {}
     <Form.Item wrapperCol={{ offset: 4 }}>
+      <Button onClick={() => form.setFieldValue('list', [...form.getFieldValue('list') ?? [], { ip: '', port: '' }])}>+</Button>
+    </Form.Item>
+   <Form.Item wrapperCol={{ offset: 4 }}>
       <Button type="primary" onClick={handleSave}>保存</Button>
       <Button type="link" href="/config-list">返回</Button>
     </Form.Item>

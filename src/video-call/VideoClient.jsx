@@ -12,7 +12,7 @@ const VideoClient = ({ localStream, clientName, stream }) => {
 
   return (
     <div className="video-container">
-      <video className="video" ref={videoRef} autoPlay muted></video>
+      <video className="video" ref={videoRef} autoPlay></video>
       <p className="invite-user">{clientName}</p>
     </div>
   )

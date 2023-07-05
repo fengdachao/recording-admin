@@ -31,13 +31,14 @@ const Config = () => {
     
   }
 
-  const expandRow = ({ deviceList }) => {
+  const expandRow = ({ list }) => {
 
-    const columns = deviceList.map((item, index) => ({ title: `摄像头#${index + 1}`, dataIndex: `device${index}` }))
+    const columns = list.map((item, index) => ({ title: `摄像头#${index + 1}`, dataIndex: `ip${index}`, key: `ip${index}` }))
     const deviceData = {}
-    deviceList.forEach((item, index) => {
-      deviceData[`device${index}`] = item
+    list.forEach((item, index) => {
+      deviceData[`ip${index}`] = item.ip
     })
+
     // const data = deviceList.map((item, index) => ({ [`device${index}`]: item }))
     console.log('device:', deviceData)
     return <Table dataSource={[deviceData]} columns={columns} pagination={false} />
@@ -59,7 +60,7 @@ const Config = () => {
     {
       title: '摄像头数量',
       dataIndex: 'deviceCount',
-      // render: (record) => record.deviceList.length,
+      render: (ignore, record) => record?.list?.length,
     },
     // {
     //   dataIndex: 'algorithm',
@@ -73,10 +74,10 @@ const Config = () => {
     //   dataIndex: 'deleteDuration',
     //   title: '删除时间',
     // },
-    {
-      dataIndex: 'port',
-      title: '端口号',
-    },
+    // {
+    //   dataIndex: 'port',
+    //   title: '端口号',
+    // },
     {
       title: '操作',
       render: (ignore, record) => {
@@ -93,7 +94,7 @@ const Config = () => {
         <Button type="link" href="/config/add">添加配置</Button>
       </Col>
     </Row>
-    <Table rowKey="_id" dataSource={configData} columns={columns} expandedRowRender={expandRow} />
+    <Table rowKey="_id" dataSource={configData} columns={columns} expandedRowRender={expandRow} pagination={false} />
   </>
 }
 

@@ -8,6 +8,8 @@ import RecordingList from './recording/list'
 import VideoCall from './video-call/Meeting'
 import VideoList from './video-call/list'
 import UserList from './user/list'
+import UserAdd from './user/add'
+import UserUpdate from './user/update'
 import ConfigList from './config'
 import ConfigEdit from './config/edit'
 import ConfigAdd from './config/add'
@@ -48,8 +50,8 @@ const router = createBrowserRouter([
         element: <VideoList />
       },
       {
-        path: 'config-list',
-        element: <ConfigList />
+        path: 'config-list/',
+        element: <ConfigList />,
       },
       {
         path: 'config-project',
@@ -71,6 +73,14 @@ const router = createBrowserRouter([
         path: 'user-list',
         element: <UserList />
       },
+      {
+        path: 'user/add',
+        element: <UserAdd />
+      },
+      {
+        path: 'user/edit/:id',
+        element: <UserUpdate />
+      }
     ],
   },
   {

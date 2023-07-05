@@ -14,7 +14,12 @@ const Edit = () => {
       })
   }, [id])
   const onSave = (formData) => {
-    api.updateConfig(formData)
+    const deviceList = formData.list?.map((item) => item.ip) ?? []
+    const updateConfig = {
+      ...formData,
+      deviceList,
+    }
+    api.updateConfig(updateConfig)
       .then(() => {
         console.log('update successfully')
         document.location.href = '/config-list'

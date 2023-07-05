@@ -66,6 +66,7 @@ const App = () => {
       config: [
         "config-list",
         "config-edit",
+        "config/add",
       ],
       user: [
         "user-list",
