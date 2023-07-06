@@ -157,7 +157,11 @@ const List = () => {
   }
 
   const onBatchDownload = () => {
-    
+    const fileUrls = dataSource.filter(({ _id }) => rowSelection.includes(_id)).map(( { relativePath }) => relativePath)
+    console.log('file urls:', fileUrls)
+    api.batchDownload(fileUrls).then((fileName) => {
+      download(`${ImageServer}/${fileName}`, 'batch-download.zip')
+    })
   }
 
   const onBatchDelete = () => {
@@ -233,8 +237,8 @@ const List = () => {
           <Col>
             <Form.Item>
               <Space>
-                <Button type="primary" onClick={onBatchDownload}>批量下载</Button>
-                <Button type="primary" onClick={onBatchDelete}>批量删除</Button>
+                <Button type="primary" disabled={rowSelection.length === 0} onClick={onBatchDownload}>批量下载</Button>
+                <Button type="primary" disabled={rowSelection.length === 0} onClick={onBatchDelete}>批量删除</Button>
               </Space>
             </Form.Item> 
           </Col>

@@ -87,3 +87,9 @@ export const updateUser = async (user) => {
 export const deleteUser = async (id) => {
   await axios.delete(`${domain}/api/user/delete?id=${id}`)
 }
+
+export const batchDownload = async (fileUrls) => {
+  const res = await axios.post(`${domain}/api/list/batch-download`, fileUrls)
+  console.log('res:', res)
+  return res.data
+}
