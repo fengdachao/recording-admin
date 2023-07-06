@@ -8,15 +8,18 @@ import {
 import { Layout, Menu, Button, Row, Col } from "antd"
 import { Link, Outlet, useLocation } from "react-router-dom";
 
-import Menus from './Menus'
+import getMenus from './Menus'
 import { TITLE } from './constant'
+import * as api from './api'
 
 const { Header, Sider, Content } = Layout
 const App = () => {
+  // const Menus = getMenus()
   const [selectedKey, setSelectedKey] = useState("")
   const [openKey, setOpenKey] = useState('')
   const [userInfo, setUserInfo] = useState({})
-  const menuItems = Menus[userInfo?.role] ?? []
+  // const menuItems = Menus[userInfo?.role] ?? []
+  const [menuItems, setMenuItems] = useState([])
   const onSelect = (item) => {
     console.log('on select:', item)
     setSelectedKey(item.key)
@@ -35,6 +38,15 @@ const App = () => {
   useEffect(() => {
     console.log('select key:', selectedKey)
   }, [selectedKey])
+
+  useEffect(() => {
+    api.getConfigData().then((data) => {
+      console.log('config data:', data)
+      const menus = getMenus(data)
+      setMenuItems(menus[userInfo?.role])
+
+    })    
+  }, [])
 
   useEffect(() => {
     const cookies = document.cookie.split(';').map((item) => item.split('='))
