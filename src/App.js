@@ -44,9 +44,10 @@ const App = () => {
       console.log('config data:', data)
       const menus = getMenus(data)
       setMenuItems(menus[userInfo?.role])
-
+      console.log('menus:', menus)
+      console.log('menus items:', menus[userInfo?.role])
     })    
-  }, [])
+  }, [userInfo])
 
   useEffect(() => {
     const cookies = document.cookie.split(';').map((item) => item.split('='))
