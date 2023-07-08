@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   node:
-    build: 'martin31/recording-admin'
+    image: 'martin31/recording-admin'
     restart: always
     container_name: recording-admin
     extra_hosts:
