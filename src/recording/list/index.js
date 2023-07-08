@@ -57,7 +57,7 @@ const List = () => {
           <Button type="link" onClick={() => onView(record.relativePath)}>查看</Button>
           {/* <DeleteOutlined onClick={() => onDelete(record._id)} /> */}
           {/* <a href={`${ImageServer}/${record.relativePath}`} download={`${record.relativePath}`}>下载</a> */}
-          <Button type="link" onClick={() => download(`${ImageServer}/${record.relativePath}`, record.relativePath)}>下载</Button>
+          <Button type="link" onClick={() => download(`${ImageServer}/${record.relativePath}`, record.relativePath.replace(/^(.*)\./, generateFileName() + '.'))}>下载</Button>
           <Button type="link" onClick={() => onDelete(record)}>删除</Button>
         </>
       )
@@ -93,10 +93,19 @@ const List = () => {
     form.setFieldValue('camera', undefined)
   }
 
+  const generateFileName = () => {
+    const { place, camera } = form.getFieldsValue()
+    const placeName = place === 'all' ? '所有' : place
+    const { name: cameraName = '所有' } = cameraList.find((item) => item.id === camera) ?? {}
+    return `P${placeName}C${cameraName}${moment().format('YYYYMMDDHHmmss')}`
+  }
+
+
   const download = (url, filename) => {
     fetch(url)
       .then(response => response.blob())
       .then(blob => {
+        console.log('download file name:', filename)
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
         link.download = filename;
@@ -160,7 +169,7 @@ const List = () => {
     const fileUrls = dataSource.filter(({ _id }) => rowSelection.includes(_id)).map(( { relativePath }) => relativePath)
     console.log('file urls:', fileUrls)
     api.batchDownload(fileUrls).then((fileName) => {
-      download(`${ImageServer}/${fileName}`, 'batch-download.zip')
+      download(`${ImageServer}/${fileName}`, generateFileName() + '.zip')
     })
   }
 

@@ -2,15 +2,9 @@ version: '3.1'
 
 services:
   node:
-    build: '.'
+    build: 'martin31/recording-admin'
     restart: always
     container_name: recording-admin
-    x-develop:
-      watch:
-        - action: rebuild
-          path: .
-          target: .
-
     extra_hosts:
       - "mongo-local:192.168.0.113"
     ports:
@@ -53,6 +47,7 @@ services:
       - 9010:9010
       - 9011:9011
       - 9012:9012
+      - 6666:6666
   chat-server:
     image: martin31/chatserver
     restart: always
