@@ -24,9 +24,10 @@ const CompareConfig = () => {
     api.getConfigParam().then((data) => {
       if (!data) return
       console.log(data)
-      const { algorithm, duration, param } = data
+      const { _id, algorithm, duration, param } = data
       const paramConfig = algorithm === 'hash' ? 2 : 1
       form.setFieldsValue({
+        _id,
         duration,
         algorithm: algorithm === 'hash' ? 2 : 1,
         param: algorithm !== 'hash' ? param : undefined,
@@ -40,10 +41,13 @@ const CompareConfig = () => {
       <h2>监控视频帧抽取算法</h2>
       <Form form={form} onChange={onChange}>
         <Form.Item name="duration" label="抽取间隙" wrapperCol={{span:6}}>
-          <Space><Input /><label>秒</label></Space>
+          <Input addonAfter="秒" />
         </Form.Item>
         <h4 style={{marginBottom: '20px'}}>算法选择及参数配置</h4>
         <Row>
+          <Col>
+            <Form.Item name="_id" hidden />
+          </Col>
           <Col>
             <Form.Item noStyle name="algorithm">
               <Radio.Group onChange={onRadioChange}>

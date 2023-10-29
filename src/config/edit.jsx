@@ -14,9 +14,12 @@ const Edit = () => {
       })
   }, [id])
   const onSave = (formData) => {
-    const deviceList = formData.list?.map((item) => item.ip) ?? []
+    console.log(formData)
+    const _list = formData.list.filter(({ name }) => name !== '')
+    const deviceList = _list.map((item) => item.ip) ?? []
     const updateConfig = {
       ...formData,
+      list: _list,
       deviceList,
     }
     api.updateConfig(updateConfig)
