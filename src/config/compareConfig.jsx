@@ -59,26 +59,18 @@ const CompareConfig = () => {
             </Form.Item>
           </Col>
           <Col>
-            {/* <Space direction='vertical'>
-              <Form.Item label="阀值" noStyle name="param">
-                <Input />
-              </Form.Item>
-              <Form.Item label="阀值" noStyle name="param">
-                <Input />
-              </Form.Item>
-            </Space> */}
             <Row gutter={[8, 8]} align='middle' style={{marginBottom: '15px'}}>
-              <Col>阀值</Col>
+              <Col>阈值</Col>
               <Col>
-                <Form.Item label="阀值" noStyle name="param">
+                <Form.Item label="阈值" noStyle name="param">
                   <Input disabled={algorithmParam === 2} />
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={[8, 8]} align='middle'>
-              <Col>阀值</Col>
+              <Col>阈值</Col>
               <Col>
-                <Form.Item label="阀值" noStyle name="hashParam">
+                <Form.Item label="阈值" noStyle name="hashParam">
                   <Input disabled={algorithmParam === 1} />
                 </Form.Item>
               </Col>

@@ -38,23 +38,23 @@ const getMenus = (config) => {
           label: <Link to="/recording-list">关键帧查询</Link>,
         }]
       },
-      {
-        key: "video",
-        icon: <PhoneOutlined />,
-        label: "视频会议",
-        children: [
-          {
-          key: "video-call",
-          icon: <VideoCameraOutlined />,
-          label: <Link to="video-call">会议开启</Link>,
-          }, 
-          // {
-          //   key: "video-list",
-          //   icon: <VideoCameraOutlined />,
-          //   label: <Link to="video-list">会议查询</Link>,
-          // }
-        ]
-      },
+      // {
+      //   key: "video",
+      //   icon: <PhoneOutlined />,
+      //   label: "视频会议",
+      //   children: [
+      //     {
+      //     key: "video-call",
+      //     icon: <VideoCameraOutlined />,
+      //     label: <Link to="video-call">会议开启</Link>,
+      //     }, 
+      //     // {
+      //     //   key: "video-list",
+      //     //   icon: <VideoCameraOutlined />,
+      //     //   label: <Link to="video-list">会议查询</Link>,
+      //     // }
+      //   ]
+      // },
       {
         key: "config",
         icon: <AimOutlined />,
@@ -97,6 +97,16 @@ const getMenus = (config) => {
     ],
     user: [
       {
+        key: 'preview',
+        icon: <CloudServerOutlined />,
+        label: '工程现场视频监控',
+        children: videoList.map(({ _id, recordingDevice, number }) => ({
+          key: _id,
+          icon: <LinkOutlined />,
+          label: <a href={`http://${recordingDevice}`} target="_blank" rel="noreferrer">{number}</a>,
+        }))
+      },
+      {
         key: "recording",
         icon: <VideoCameraOutlined />,
         label: "监控查询",
@@ -106,20 +116,20 @@ const getMenus = (config) => {
           label: <Link to="/recording-list">列表</Link>,
         }]
       },
-      {
-        key: "video",
-        icon: <VideoCameraOutlined />,
-        label: "视频会议",
-        children: [{
-          key: "video-call",
-          icon: <VideoCameraOutlined />,
-          label: <Link to="video-call">会议开启</Link>,
-        }, {
-          key: "video-list",
-          icon: <VideoCameraOutlined />,
-          label: <Link to="video-list">会议查询</Link>,
-        }]
-      },
+      // {
+      //   key: "video",
+      //   icon: <VideoCameraOutlined />,
+      //   label: "视频会议",
+      //   children: [{
+      //     key: "video-call",
+      //     icon: <VideoCameraOutlined />,
+      //     label: <Link to="video-call">会议开启</Link>,
+      //   }, {
+      //     key: "video-list",
+      //     icon: <VideoCameraOutlined />,
+      //     label: <Link to="video-list">会议查询</Link>,
+      //   }]
+      // },
     ]
   }
 }
