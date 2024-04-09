@@ -22,11 +22,18 @@ const getMenus = (config) => {
         key: 'preview',
         icon: <CloudServerOutlined />,
         label: '工程现场视频监控',
-        children: videoList.map(({ _id, recordingDevice, number }) => ({
-          key: _id,
-          icon: <LinkOutlined />,
-          label: <a href={`http://${recordingDevice}`} target="_blank" rel="noreferrer">{number}</a>,
-        }))
+        children: [
+          {
+              key: 'preview-1',
+              icon: <LinkOutlined />,
+              label: <a href="http://10.30.58.143:8083" target="_blank" rel="noreferrer">舟山(内网)</a>,
+          },
+          ...videoList.map(({ _id, recordingDevice, number }) => ({
+              key: _id,
+              icon: <LinkOutlined />,
+              label: <a href={`http://${recordingDevice}`} target="_blank" rel="noreferrer">{number}</a>,
+          })),
+        ]
       },
       {
         key: "recording",
