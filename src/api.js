@@ -2,7 +2,7 @@ import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 import { HOST } from './constant'
 
-// const domain = 'http://mongo-local:3001'
+// const domain = 'http://api-server:3001'
 const domain = `http://${HOST}:3001`
 
 export const getList = async (params) => {

@@ -1,14 +1,6 @@
 version: '3.1'
 
 services:
-  node:
-    image: 'martin31/recording-admin'
-    restart: always
-    container_name: recording-admin
-    extra_hosts:
-      - "mongo-local:192.168.0.103"
-    ports:
-      - 80:3000
   mongo:
     image: mongo
     restart: always
@@ -17,12 +9,21 @@ services:
       - mongo-db:/data/db
     ports:
       - 27017:27017
+  web-server:
+    image: 'martin31/recording-admin:1.1'
+    restart: always
+    container_name: recording-admin
+    extra_hosts:
+      - "mongo-local:192.168.3.110"
+      - "api-server:192.168.3.110"
+    ports:
+      - 8000:3000
   resource-api:
     image: martin31/resource-api
     restart: always
-    container_name: resourc-api
+    container_name: resource-api
     extra_hosts:
-      - "mongo-local:192.168.0.103"
+      - "mongo-local:192.168.3.110"
     ports:
       - 3001:3001
   upload-server:
@@ -32,7 +33,7 @@ services:
     volumes:
       - upload-images:/usr/src/app/images/
     extra_hosts:
-      - "mongo-local:192.168.0.103"
+      - "mongo-local:192.168.3.110"
     ports:
       - 8080:8080
       - 9001:9001
