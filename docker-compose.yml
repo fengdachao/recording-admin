@@ -14,8 +14,8 @@ services:
     restart: always
     container_name: recording-admin
     extra_hosts:
-      - "mongo-local:192.168.3.110"
-      - "api-server:192.168.3.110"
+      - "mongo-local:${HOST}"
+      - "api-server:${HOST}"
     ports:
       - 8000:3000
   resource-api:
@@ -23,7 +23,7 @@ services:
     restart: always
     container_name: resource-api
     extra_hosts:
-      - "mongo-local:192.168.3.110"
+      - "mongo-local:${HOST}"
     ports:
       - 3001:3001
   upload-server:
@@ -33,7 +33,7 @@ services:
     volumes:
       - upload-images:/usr/src/app/images/
     extra_hosts:
-      - "mongo-local:192.168.3.110"
+      - "mongo-local:${HOST}"
     ports:
       - 8080:8080
       - 9001:9001
