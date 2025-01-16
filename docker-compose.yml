@@ -10,12 +10,11 @@ services:
     ports:
       - 27017:27017
   web-server:
-    image: 'martin31/recording-admin:1.1'
+    image: 'martin31/recording-admin:1.2'
     restart: always
     container_name: recording-admin
     extra_hosts:
       - "mongo-local:${HOST}"
-      - "api-server:${HOST}"
     ports:
       - 8000:3000
   resource-api:
