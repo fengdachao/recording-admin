@@ -1,103 +1,107 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import Preview from './preview'
-import RecordingList from './recording/list'
+import React from "react"
+import ReactDOM from "react-dom/client"
+import "./index.css"
+import App from "./App"
+import Root from './Root'
+import Preview from "./preview"
+import RecordingList from "./recording/list"
 // import VideoCall from './video-call/call'
-import VideoCall from './video-call/Meeting'
-import VideoList from './video-call/list'
-import UserList from './user/list'
-import UserAdd from './user/add'
-import UserUpdate from './user/update'
-import ConfigList from './config'
-import ConfigEdit from './config/edit'
-import ConfigAdd from './config/add'
-import ConfigProject from './config/project'
-import ConfigAlgorithm from './config/compareConfig'
-import Login from './login'
+import VideoCall from "./video-call/Meeting"
+import VideoList from "./video-call/list"
+import UserList from "./user/list"
+import UserAdd from "./user/add"
+import UserUpdate from "./user/update"
+import ConfigList from "./config"
+import ConfigEdit from "./config/edit"
+import ConfigAdd from "./config/add"
+import ConfigProject from "./config/project"
+import ConfigAlgorithm from "./config/compareConfig"
+import Login from "./login"
 
-import reportWebVitals from './reportWebVitals';
+import reportWebVitals from "./reportWebVitals"
 
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Root />,
     children: [
       {
-        index: true,
-        element: <RecordingList />,
+        path: "dashboard",
+        element: <App />,
+        children: [
+          {
+            index: true,
+            element: <RecordingList />,
+          },
+          {
+            path: "preview",
+            element: <Preview />,
+          },
+          {
+            path: "recording-list",
+            element: <RecordingList />,
+          },
+          {
+            path: "video-call",
+            element: <VideoCall />,
+          },
+          {
+            path: "video-list",
+            element: <VideoList />,
+          },
+          {
+            path: "config-list/",
+            element: <ConfigList />,
+          },
+          {
+            path: "config-project",
+            element: <ConfigProject />,
+          },
+          {
+            path: "config-algorithm",
+            element: <ConfigAlgorithm />,
+          },
+          {
+            path: "config/add",
+            element: <ConfigAdd />,
+          },
+          {
+            path: "config-edit/:id",
+            element: <ConfigEdit />,
+          },
+          {
+            path: "user-list",
+            element: <UserList />,
+          },
+          {
+            path: "user/add",
+            element: <UserAdd />,
+          },
+          {
+            path: "user/edit/:id",
+            element: <UserUpdate />,
+          },
+        ],
       },
       {
-        path: 'preview',
-        element: <Preview />
+        path: "login",
+        element: <Login />,
       },
-      {
-        path: "recording-list",
-        element: <RecordingList />,
-      },
-      {
-        path: "video-call",
-        element: <VideoCall />
-      },
-      {
-        path: 'video-list',
-        element: <VideoList />
-      },
-      {
-        path: 'config-list/',
-        element: <ConfigList />,
-      },
-      {
-        path: 'config-project',
-        element: <ConfigProject />
-      },
-      {
-        path: 'config-algorithm',
-        element: <ConfigAlgorithm />
-      },
-      {
-        path: 'config/add',
-        element: <ConfigAdd />
-      },
-      {
-        path: 'config-edit/:id',
-        element: <ConfigEdit />
-      },
-      {
-        path: 'user-list',
-        element: <UserList />
-      },
-      {
-        path: 'user/add',
-        element: <UserAdd />
-      },
-      {
-        path: 'user/edit/:id',
-        element: <UserUpdate />
-      }
     ],
   },
-  {
-    path: 'login',
-    element: <Login />
-  }
-]);
+])
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
   <React.StrictMode>
     {/* <App /> */}
     <RouterProvider router={router} />
   </React.StrictMode>
-);
+)
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+reportWebVitals()

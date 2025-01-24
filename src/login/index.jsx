@@ -15,7 +15,7 @@ const Login = () => {
           document.cookie = 'isAuthUnsafe=true'
           document.cookie = `role=${role}`
           document.cookie = `user=${inputName}`
-          document.location.assign('/recording-list')
+          document.location.assign('/dashboard/recording-list')
         }
       })
   };

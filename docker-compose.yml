@@ -3,20 +3,21 @@ version: '3.1'
 services:
   mongo:
     image: mongo
-    restart: always
+    # command: mongod --dbpath /Users/dachaofeng/data/db
+    # restart: always
     container_name: recording-mongo
     volumes:
-      - mongo-db:/data/db
+      - mongo-db:/Users/dachaofeng/data/db
     ports:
       - 27017:27017
-  web-server:
-    image: 'martin31/recording-admin:1.2'
-    restart: always
-    container_name: recording-admin
-    extra_hosts:
-      - "mongo-local:${HOST}"
-    ports:
-      - 8000:3000
+  # web-server:
+  #   image: 'martin31/recording-admin:1.2'
+  #   restart: always
+  #   container_name: recording-admin
+  #   extra_hosts:
+  #     - "mongo-local:${HOST}"
+  #   ports:
+  #     - 8000:3000
   resource-api:
     image: martin31/resource-api
     restart: always

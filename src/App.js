@@ -60,10 +60,10 @@ const App = () => {
         loginUser: userCookie[1]
       })
     }
-    console.log('cookies:', cookies, isAuth)
-    if (!Array.isArray(isAuth) || isAuth[1] !== 'true') {
-      document.location.href = '/login'
-    }
+    console.log('cookies in app:', cookies, isAuth)
+    // if (!Array.isArray(isAuth) || isAuth[1] !== 'true') {
+    //   document.location.href = '/login'
+    // }
   }, [])
 
   useEffect(() => {
