@@ -42,7 +42,7 @@ const getMenus = (config) => {
         children: [{
           key: "recording-list",
           icon: <TableOutlined />,
-          label: <Link to="/recording-list">关键帧查询</Link>,
+          label: <Link to="/dashboard/recording-list">关键帧查询</Link>,
         }]
       },
       // {
@@ -70,7 +70,7 @@ const getMenus = (config) => {
           {
             key: "config-list",
             icon: <ReadOutlined />,
-            label: <Link to="config-list">工程项目</Link>,
+            label: <Link to="/dashboard/config-list">工程项目</Link>,
           },
           // {
           //   key: "project",
@@ -80,7 +80,7 @@ const getMenus = (config) => {
           {
             key: "algorithm",
             icon:  <SettingOutlined />,
-            label: <Link to="/config-algorithm">帧抽取算法</Link>
+            label: <Link to="/dashboard/config-algorithm">帧抽取算法</Link>
           }
         ]
       },
@@ -92,12 +92,12 @@ const getMenus = (config) => {
           {
             key: "user-list",
             icon: <UnorderedListOutlined />,
-            label: <Link to="user-list">用户列表</Link>,
+            label: <Link to="/dashboard/user-list">用户列表</Link>,
           },
           {
             key: "user-add",
             icon: <UserAddOutlined />,
-            label: <Link to="user/add">添加用户</Link>,
+            label: <Link to="/dashboard/user/add">添加用户</Link>,
           }
         ]
       },
@@ -120,7 +120,7 @@ const getMenus = (config) => {
         children: [{
           key: "recording-list",
           icon: <VideoCameraOutlined />,
-          label: <Link to="/recording-list">列表</Link>,
+          label: <Link to="/dashboard/recording-list">列表</Link>,
         }]
       },
       // {

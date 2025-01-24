@@ -32,7 +32,7 @@ const List = () => {
       title: '操作',
       render: (ignore, record) => (
         <Space>
-          <Button type="link" href={`/user/edit/${record._id}`}>编辑</Button>
+          <Button type="link" href={`/dashboard/user/edit/${record._id}`}>编辑</Button>
           <Button type="link" onClick={() => onDelete(record._id, record.name)} >删除</Button>
         </Space>
       )

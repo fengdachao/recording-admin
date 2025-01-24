@@ -24,7 +24,7 @@ const UpdateUser = () => {
       ...values,
       id: initialValues._id,
     }).then(() => {
-      window.location.assign('/user-list')
+      window.location.assign('/dashboard/user-list')
     })
   }
   useEffect(() => {
@@ -49,7 +49,7 @@ const UpdateUser = () => {
       <Form.Item>
         <Space>
           <Button type="primary" onClick={() => form.submit()}>保存</Button>
-          <Button type="primary" onClick={() => window.location.assign('/user-list')}>返回</Button>
+          <Button type="primary" onClick={() => window.location.assign('/dashboard/user-list')}>返回</Button>
         </Space>
       </Form.Item>
     </Form>
